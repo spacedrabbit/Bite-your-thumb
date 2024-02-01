@@ -55,7 +55,7 @@ class FoaasAboutViewController: UIViewController, FoaasTeamMemberViewDelegate {
     
     func setUpOctoView () {
         self.view.addSubview(octoImageView)
-        self.view.sendSubview(toBack: octoImageView)
+		self.view.sendSubviewToBack(octoImageView)
         _ = [ octoImageView.topAnchor.constraint(equalTo: primaryColourStatusBar.bottomAnchor),
               octoImageView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: -self.view.frame.width * 0.25),
               octoImageView.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.9),
@@ -124,7 +124,7 @@ class FoaasAboutViewController: UIViewController, FoaasTeamMemberViewDelegate {
     
     internal lazy var closeButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.addTarget(self, action: #selector(closeButtonClicked(sender:)), for: UIControlEvents.touchUpInside)
+        button.addTarget(self, action: #selector(closeButtonClicked(sender:)), for: .touchUpInside)
         button.setImage(UIImage(named: "x_symbol")!, for: .normal)
         button.backgroundColor = ColorManager.shared.currentColorScheme.accent
         button.layer.cornerRadius = 26
@@ -154,12 +154,14 @@ class FoaasAboutViewController: UIViewController, FoaasTeamMemberViewDelegate {
     
     //MARK: Actions
     
+	@objc
     func closeButtonClicked(sender: UIButton) {
         _ = self.navigationController?.popViewController(animated: true)
     }
     
     //MARK: - FoaasTeamMemberView Delegate Methods --Should this be condensed into one universal action for all buttons, or is this a little bit more legible?
-    func twitterButtonPressed(_ url: URL) {
+    
+	func twitterButtonPressed(_ url: URL) {
         safari.open(url, options: [:], completionHandler: nil)
     }
     

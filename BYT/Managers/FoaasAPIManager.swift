@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol FoaasAPIManagerDelegate: class {
+protocol FoaasAPIManagerDelegate: AnyObject {
   func didFinishOperationsRequest(data: Data)
   func didFinishFoaasRequest(data: Data)
 }

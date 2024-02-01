@@ -16,7 +16,7 @@ enum Underlined {
   case yes, no
 }
 
-protocol FoaasTextFieldDelegate: class {
+protocol FoaasTextFieldDelegate: AnyObject {
     func foaasTextField(_ textField: FoaasTextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool
     func foaasTextFieldShouldReturn(_ textField: FoaasTextField) -> Bool
     func foaasTextFieldDidEndEditing(_ textField: FoaasTextField)
@@ -160,7 +160,7 @@ class FoaasTextField: UIView, UITextFieldDelegate {
     return true
   }
   
-  func textFieldDidEndEditing(_ textField: UITextField, reason: UITextFieldDidEndEditingReason) {
+	func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
     animateUnderline(.no)
     guard textFieldHasText() else {
       slideLabel(direction: .down)

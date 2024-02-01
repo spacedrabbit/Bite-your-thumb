@@ -101,8 +101,8 @@ class FoaasNavigationController: UINavigationController, UINavigationControllerD
       mainWindow.subviews.contains(rightFloatingButton)
     else { return }
     
-    mainWindow.bringSubview(toFront: leftFloatingButton)
-    mainWindow.bringSubview(toFront: rightFloatingButton)
+	  mainWindow.bringSubviewToFront(leftFloatingButton)
+	  mainWindow.bringSubviewToFront(rightFloatingButton)
   }
   
   

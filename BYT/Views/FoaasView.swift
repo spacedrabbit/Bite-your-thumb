@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol FoaasViewDelegate: class {
+protocol FoaasViewDelegate: AnyObject {
     func didTapActionButton()
     func didTapSettingsButton()
 }
@@ -97,6 +97,8 @@ class FoaasView: UIView {
     
     
     // MARK: - Actions
+	
+	@objc
     internal func didTapButton(sender: UIButton) {
         let newTransform = CGAffineTransform(scaleX: 1.1, y: 1.1)
         let originalTransform = sender.imageView!.transform
@@ -110,6 +112,7 @@ class FoaasView: UIView {
         
     }
     
+	@objc
     internal func didTapSettingsButton() {
         self.delegate?.didTapSettingsButton()
     }

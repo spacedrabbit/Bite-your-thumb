@@ -123,6 +123,7 @@ class FoaasViewController: UIViewController, FoaasViewDelegate, FoaasSettingMenu
         notificationCenter.addObserver(self, selector: #selector(updateSettingsLabel(from:)), name: Notification.Name(rawValue: VersionManager.versionDidUpdateNotification), object: nil)
     }
     
+	@objc
     internal func updateSettingsLabel(from notification: Notification) {
         guard
             let userInfo = notification.userInfo,
@@ -136,6 +137,7 @@ class FoaasViewController: UIViewController, FoaasViewDelegate, FoaasSettingMenu
         }
     }
     
+	@objc
     internal func updateFoaas(sender: Notification) {
         guard let validFoaas = sender.object as? Foaas else {
             print("The notification center did not register a Foaas Object. Fix your bug bro.")
@@ -146,7 +148,7 @@ class FoaasViewController: UIViewController, FoaasViewDelegate, FoaasSettingMenu
         
         //Updates the constraint constant of subtitleLabel to newConstraintConstant asynchronously as the length of subtitleLabel.text changes
         DispatchQueue.main.async {
-            let numberOfCharactersInSubtitle = validFoaas.subtitle.characters.count
+            let numberOfCharactersInSubtitle = validFoaas.subtitle.count
             let newConstraintConstant = self.foaasView.subtitleLabelConstraint.constant - CGFloat(Double(numberOfCharactersInSubtitle) * 1.5)
             if newConstraintConstant < 16 {
                 self.foaasView.subtitleLabelConstraint.constant = 16.0
@@ -179,6 +181,8 @@ class FoaasViewController: UIViewController, FoaasViewDelegate, FoaasSettingMenu
     
     
     // MARK: - View Delegate
+	
+	@objc
     func didTapActionButton() {
         guard let navVC = self.navigationController else { return }
         
@@ -196,11 +200,12 @@ class FoaasViewController: UIViewController, FoaasViewDelegate, FoaasSettingMenu
     
     
     // MARK: - Animating Menu
+	@objc
     internal func toggleSettingsMenu(sender: UISwipeGestureRecognizer) {
         switch sender.direction {
-        case UISwipeGestureRecognizerDirection.up where self.foaasView.frame.origin.y == 0:
+        case .up where self.foaasView.frame.origin.y == 0:
             animateSettingsMenu(show: true, duration: 0.8, dampening: 0.7, springVelocity: 7)
-        case UISwipeGestureRecognizerDirection.down where self.foaasView.frame.origin.y != 0:
+        case .down where self.foaasView.frame.origin.y != 0:
             animateSettingsMenu(show: false, duration: 0.1)
         default: print("Not interested")
         }
@@ -357,11 +362,13 @@ class FoaasViewController: UIViewController, FoaasViewDelegate, FoaasSettingMenu
     
     ///Present appropriate Alert by UIAlertViewController, indicating images are successfully saved or not
     ///https://developer.apple.com/reference/uikit/uialertcontroller
+	///
+	@objc
     internal func createScreenShotCompletion(image: UIImage, didFinishSavingWithError: NSError?, contextInfo: UnsafeMutableRawPointer?) {
         
         if didFinishSavingWithError != nil {
             print("Error in saving image.")
-            let alertController = UIAlertController(title: "Failed to save screenshot to photo library", message: nil , preferredStyle: UIAlertControllerStyle.alert)
+            let alertController = UIAlertController(title: "Failed to save screenshot to photo library", message: nil , preferredStyle: .alert)
             let okay = UIAlertAction(title: "Okay", style: .cancel, handler: nil)
             alertController.addAction(okay)
             // do not dismiss the alert yourself in code this way! add a button and let the user handle it
@@ -370,7 +377,7 @@ class FoaasViewController: UIViewController, FoaasViewDelegate, FoaasSettingMenu
         else {
             // this has to be in an else clause. because if error is !nil, you're going to be presenting 2x of these alerts
             print("Image saved.")
-            let alertController = UIAlertController(title: "Successfully saved screenshot to photo library", message: nil , preferredStyle: UIAlertControllerStyle.alert)
+            let alertController = UIAlertController(title: "Successfully saved screenshot to photo library", message: nil , preferredStyle: .alert)
             let okay = UIAlertAction(title: "Okay", style: .cancel, handler: nil)
             alertController.addAction(okay)
             

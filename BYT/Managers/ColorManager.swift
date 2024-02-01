@@ -77,13 +77,13 @@ class ColorManager {
     }
     
     func saveColorSchemes() {
-        let colorSchemesData: [Data] = ColorManager.shared.colorSchemes.flatMap { try? $0.toData() }
+        let colorSchemesData: [Data] = ColorManager.shared.colorSchemes.compactMap { try? $0.toData() }
         ColorManager.defaults.set(colorSchemesData, forKey: ColorManager.colorSchemesKey)
     }
     
     func loadColorSchemes() {
         if let savedDataFromDefaults = ColorManager.defaults.value(forKey: ColorManager.colorSchemesKey) as? [Data] {
-            self.colorSchemes = savedDataFromDefaults.flatMap { ColorScheme(data: $0) }
+            self.colorSchemes = savedDataFromDefaults.compactMap { ColorScheme(data: $0) }
             print("Succesfully loaded colorSchemes")
         } else {
             // if there are no saved clorSchemes then it will set an array of just the default colorScheme

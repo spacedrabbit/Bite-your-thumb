@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol FoaasColorPickerViewDelegate: class {
+protocol FoaasColorPickerViewDelegate: AnyObject {
     func didChangeColorPickerIndex(to index: Int)
 }
 
@@ -155,6 +155,7 @@ class FoaasColorPickerView: UIView, UIScrollViewDelegate {
         self.containerView.setNeedsDisplay()
     }
     
+	@objc
     internal func updateColors(from notification: Notification) {
         guard
             let userInfo = notification.userInfo,

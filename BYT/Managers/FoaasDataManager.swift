@@ -56,7 +56,7 @@ internal class FoaasDataManager {
   /// - Parameter operations: The array of `FoaaasOperation` to store to `UserDefaults`
   private func save(operations: [FoaasOperation]) {
     self.operations = operations
-    let opsData = operations.flatMap{ try? $0.toData() }
+    let opsData = operations.compactMap{ try? $0.toData() }
     
     print("Successful conversion of [FoaasOperation] to [Data]. Storing...")
     FoaasDataManager.defaults.set(opsData, forKey: FoaasDataManager.operationsKey)
@@ -71,7 +71,7 @@ internal class FoaasDataManager {
     else { return false }
     
     print("Found [Data], converting to FoaasOperation")
-    self.operations = opsData.flatMap { FoaasOperation(data: $0) }
+    self.operations = opsData.compactMap { FoaasOperation(data: $0) }
     return true
   }
   

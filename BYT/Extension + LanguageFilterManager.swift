@@ -43,7 +43,7 @@ class LanguageFilter {
     // MARK: - LanguageFilterClosure Options
     static let clean: LanguageFilterClosure = { word in
         for foulWord in wordsToBeFiltered where word.lowercased().contains(foulWord){
-            for char in word.lowercased().characters where vowels.contains(char) {
+            for char in word.lowercased() where vowels.contains(char) {
                 return word.replacingOccurrences(of: String(char), with: "*", options: .caseInsensitive, range: nil)
             }
         }

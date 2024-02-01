@@ -134,7 +134,7 @@ class FoaasPathBuilder {
     
     guard let locatedPosition = keyComponent else { return nil }
     
-    return components.index(of: locatedPosition)
+	  return components.firstIndex(of: locatedPosition)
   }
   
   /**

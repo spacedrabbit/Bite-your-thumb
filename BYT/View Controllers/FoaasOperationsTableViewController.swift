@@ -20,7 +20,7 @@ class FoaasOperationsTableViewController: UITableViewController {
         self.tableView.separatorColor = UIColor.clear
         self.title = "Operations"
         
-        self.tableView.rowHeight = UITableViewAutomaticDimension
+		self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.estimatedRowHeight = 64.0
       
         setupViewHierarchy()
@@ -90,7 +90,7 @@ class FoaasOperationsTableViewController: UITableViewController {
     
     internal lazy var floatingButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.addTarget(self, action: #selector(floatingButtonClicked(sender:)), for: UIControlEvents.touchUpInside)
+        button.addTarget(self, action: #selector(floatingButtonClicked(sender:)), for: .touchUpInside)
         button.setImage(UIImage(named: "x_symbol")!, for: .normal)
         button.backgroundColor = ColorManager.shared.currentColorScheme.accent
         button.layer.cornerRadius = 26
@@ -103,6 +103,8 @@ class FoaasOperationsTableViewController: UITableViewController {
     }()
     
     //MARK: - Actions
+	
+	@objc
     func floatingButtonClicked(sender: UIButton) {
         let newTransform = CGAffineTransform(scaleX: 1.1, y: 1.1)
         let originalTransform = sender.imageView!.transform
@@ -116,6 +118,7 @@ class FoaasOperationsTableViewController: UITableViewController {
         popTableView()
     }
   
+	@objc
     func popTableView() {
       _ = navigationController?.popViewController(animated: true)
     }

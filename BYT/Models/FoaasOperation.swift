@@ -37,7 +37,7 @@ internal struct FoaasOperation: JSONConvertible, DataConvertible {
     }
     
     self.url = jUrl
-    self.fields = jFields.flatMap { FoaasField(json: $0) }
+    self.fields = jFields.compactMap { FoaasField(json: $0) }
   }
   
   func toJson() -> [String : AnyObject] {
