@@ -58,7 +58,7 @@ class FoaasOperationsTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return operations?.count ?? 0
+        return operations.count
     }
     
     
@@ -70,17 +70,17 @@ class FoaasOperationsTableViewController: UITableViewController {
             return cell
         }
                 
-        operationCell.operationNameLabel.text = operations?[indexPath.row].name.filterBadLanguage()
+        operationCell.operationNameLabel.text = operations[indexPath.row].name.filterBadLanguage()
         operationCell.backgroundColor = ColorManager.shared.currentColorScheme.colorArray[indexPath.row % ColorManager.shared.currentColorScheme.colorArray.count]
         return operationCell
     }
     
     // MARK: - Tableview Delegate
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let selectedOperation = operations?[indexPath.row],
+        guard
             let navVC = self.navigationController
         else { return }
-        
+		let selectedOperation = operations[indexPath.row]
         let dtvc = FoaasPrevewViewController()
         dtvc.set(operation: selectedOperation)
         navVC.pushViewController(dtvc, animated: true)

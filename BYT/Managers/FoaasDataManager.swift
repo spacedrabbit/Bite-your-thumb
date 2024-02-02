@@ -8,107 +8,61 @@
 
 import Foundation
 
-internal class FoaasDataManager {
-  private static let operationsKey: String = "FoaasOperationsKey"
-  private static let defaults = UserDefaults.standard
-  internal private(set) var operations: [FoaasOperation]?
-    
-  static let foaasURL = URL(string: "https://foaas.onrender.com/awesome/Someone")
-  
-  // MARK: Singleton
-  internal static let shared: FoaasDataManager = FoaasDataManager()
-  private init() {}
-  
-  
-  // MARK: API Request
-  
-  /// Opportunistically loads `[FoaasOperation]` from `UserDefaults` if present. Otherwise, makes an API
-  /// request to `FoaasAPIManager` to retrieve data. Additionally, saves valid `FoaasOperation`.
-  ///
-  /// - Parameter operations: If located in `UserDefaults` or the API call is successful, 
-  ///    the converted `[FoaasOperation]` based on latest server info
-  internal func requestOperations(_ operations: @escaping ([FoaasOperation]?)->Void) {
-    if self.load() {
-      operations(self.operations!)
-      return
-    }
-    
-    FoaasService.getOperations { (apiOperations: [FoaasOperation]?) in
-      operations(apiOperations)
+class FoaasDataManager {
+	static let shared = FoaasDataManager()
+	static let foaasURL = URL(string: "https://foaas.onrender.com/awesome/Someone")
+	
+	private(set) var operations: [FoaasOperation] = []
+	
+	private static let opsKey: String = "com.byt.ops"
+	
+	private init() {}
+	
+	// MARK: API Request
+	
+	/// Opportunistically loads `[FoaasOperation]` from `UserDefaults` if present. Otherwise, makes an API
+	/// request to `FoaasAPIManager` to retrieve data. Additionally, saves valid `FoaasOperation`.
+	///
+	/// - Parameter operations: If located in `UserDefaults` or the API call is successful,
+	///    the converted `[FoaasOperation]` based on latest server info
+	static func getOperations() async -> [FoaasOperation] {
+		if shared.operations.count > 0 {
+			return shared.operations
+		}
+		
+		do {
+			return try await FoaasService.getOperations()
+		} catch (let e) {
+			print("Error encountered getting operations: \(e)")
+			return []
+		}
+	}
+	
+	static func prefetchOperations() {
+		Task { await getOperations() }
+	}
+	
+	// MARK: - Save/Load
+	
+	/// Saves `[FoaasOperation]` to `UserDefaults`
+	///
+	/// - Parameter operations: The array of `FoaaasOperation` to store to `UserDefaults`
+	static func save(operations: [FoaasOperation]) {
+		shared.operations = operations
 
-      guard apiOperations != nil else { return }
-      self.save(operations: apiOperations!)
-    }
-  }
-  
-  internal func requestOperations() {
-    FoaasDataManager.shared.requestOperations { (operations) in
-      print("Operations loaded. Ignoring results")
-    }
-  }
-  
-  
-  // MARK: - Save/Load
-  // TODO: Improve logging print statements
-  
-  /// Saves `[FoaasOperation]` to `UserDefaults` as `Data`
-  ///
-  /// - Parameter operations: The array of `FoaaasOperation` to store to `UserDefaults`
-  private func save(operations: [FoaasOperation]) {
-    self.operations = operations
-    let opsData = operations.compactMap{ try? $0.toData() }
-    
-    print("Successful conversion of [FoaasOperation] to [Data]. Storing...")
-    FoaasDataManager.defaults.set(opsData, forKey: FoaasDataManager.operationsKey)
-  }
-  
-  /// Loads all `[FoaasOperation]` stored in `UserDefaults`. Sets manager's `var operations: [FoaasOperation]?` property to located `[FoaasOperation]`
-  ///
-  /// - Returns: `true` if `[FoaasOperation]` was found, `false` otherwise
-  private func load() -> Bool {
-    guard
-      let opsData = FoaasDataManager.defaults.object(forKey: FoaasDataManager.operationsKey) as? [Data]
-    else { return false }
-    
-    print("Found [Data], converting to FoaasOperation")
-    self.operations = opsData.compactMap { FoaasOperation(data: $0) }
-    return true
-  }
-  
-  
-  // MARK: - Delete
-  internal func deleteStoredOperations() {
-    guard self.load() else {
-      return
-    }
-    
-    print("Deleting stored [FoaasOperation]")
-    FoaasDataManager.defaults.removeObject(forKey: FoaasDataManager.operationsKey)
-    self.operations = nil
-  }
-    
-    internal func requestFoaas(url: URL, _ operations: @escaping (Foaas?) -> Void) {
-//        FoaasService.getFoaas(url: url) { (foaas: Foaas?) in
-//            operations(foaas)
-//        }
-    }
-    
-    internal func requestData(endpoint: String, _ operations: @escaping (Data?) -> Void) {
-        FoaasService.getData(endpoint: endpoint) { (data: Data?) in
-            operations(data)
-        }
-    }
-    
-    internal func requestColorSchemeData(endpoint: String, _ operations: @escaping (Data?) -> Void) {
-        FoaasService.getData(endpoint: endpoint) { (data: Data?) in
-            operations(data)
-        }
-    }
-    
-    internal func requestVersionData(endpoint: String, _ operations: @escaping (Data?) -> Void) {
-        FoaasService.getData(endpoint: endpoint) { (data: Data?) in
-            operations(data)
-        }
-    }
-  
+		let result = shared.operations.compactMap({ try? JSONEncoder().encode($0) })
+		UserDefaults.standard.set(result, forKey: Self.opsKey)
+	}
+	
+	static func load() -> [FoaasOperation] {
+		guard let result = UserDefaults.standard.object(forKey: Self.opsKey) as? [Data] else { return [] }
+		
+		return result.compactMap({ try? JSONDecoder().decode(FoaasOperation.self, from: $0) })
+	}
+	
+	static func deleteStoredOperations() {
+		UserDefaults.standard.removeObject(forKey: Self.opsKey)
+		shared.operations = []
+	}
+	
 }

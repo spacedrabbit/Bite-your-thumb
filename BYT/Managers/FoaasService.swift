@@ -37,38 +37,19 @@ class FoaasService {
 		}
 	}
 	
-	// MARK: Operations GET
-	internal class func getOperations(completion: @escaping ([FoaasOperation]?)->Void ) {
-		
-		defaultSession.dataTask(with: FoaasService.operationsURL, completionHandler: { (data: Data?, response: URLResponse?, error: Error?) in
-			guard error == nil else {
-				print("Error: \(error.unsafelyUnwrapped)")
-				return
-			}
+	class func getOperations() async throws -> [FoaasOperation] {
+		do {
+			var request = URLRequest(url: FoaasService.operationsURL)
+			request.addValue("application/json", forHTTPHeaderField: "Accept")
+			let result = try await URLSession.shared.data(for: request)
+			let decoder = JSONDecoder()
 			
-			guard let validData = data else {
-				print("Error: Data returned was nil")
-				return
-			}
+			return try decoder.decode([FoaasOperation].self, from: result.0)
 			
-			do {
-				guard let operationsJson = try JSONSerialization.jsonObject(with: validData, options: []) as? [Any]
-				else {
-					print("Error attempting to serialize JSON")
-					return
-				}
-				
-				var operations: [FoaasOperation]? = []
-				for case let operation as [String : AnyObject] in operationsJson {
-					guard let foaasOp = FoaasOperation(json: operation) else { continue }
-					operations?.append(foaasOp)
-				}
-				completion(operations?.sorted{ $0.name < $1.name })
-			}
-			catch {
-				print("Error attempting to deserialize operations json: \(error)")
-			}
-		}).resume()
+		} catch (let e) {
+			print("Error receiving foaas: \(e)")
+			return []
+		}
 	}
 	
 	// MARK: - Helpers

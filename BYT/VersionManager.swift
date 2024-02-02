@@ -9,50 +9,53 @@
 import Foundation
 
 class VersionManager {
-    static let versionUpdatedKey: String = "VersionUpdated"
-    static let versionDidUpdateNotification: String = "VersionDidUpdate" 
-    static let shared: VersionManager = VersionManager()
+	
+	static let versionKey: String = "com.byt.version.key"
+	private var _currentVersion: Version = shared.defaultVersion
     
+	static var currentVersion: Version { shared._currentVersion }
+	static let shared: VersionManager = VersionManager()
+	
     private init() {}
 
-    var currentVersion: Version! {
-        didSet {
-            self.saveCurrentVersion()
-        }
-    }
-    
-    private let defaultVersionDict: [String: Any] = [
-        "id" : 0,
-        "record_url" : "https://fieldbook.com/records/5873aafdbc9912030079d38b",
-        "version_name" : "default",
-        "number" : "0.0.0",
-        "date_released" : "2017-01-01",
-        "message" : "\"Made with ❤️\""
-    ]
-    
-    private static let currentVersionKey: String = "CurrentVersionKey"
-    private static let defaults = UserDefaults.standard
-    
-    func saveCurrentVersion() {
-        do {
-            let currentVersionData: Data = try VersionManager.shared.currentVersion.toData()
-            VersionManager.defaults.set(currentVersionData, forKey: VersionManager.currentVersionKey)
-            print("think I successfully saved the currentVersion")
-        } catch {
-            print("Error converting currentVersion to data")
-        }
-    }
-    
-    func loadCurrentVersion() {
-        if let savedDataFromDefaults = VersionManager.defaults.value(forKey: VersionManager.currentVersionKey) as? Data {
-            self.currentVersion = Version(data: savedDataFromDefaults)
-        } else {
-            // If the is no saved color scheme, the app set the current color scheme to default purple
-            self.currentVersion = Version(from: self.defaultVersionDict)
-        }
-    }
+	private var defaultVersion: Version {
+		Version(version: "1.0.0",
+				message: "Made with 🤖",
+				date: Date())
+	}
+	
+	static func update(_ version: Version) {
+		guard let existing = Self.load() else {
+			Self.save(version)
+			return
+		}
+		
+		Self.save(version)
+		if existing.version != version.version {
+			NotificationCenter.default.post(name: .versionDidUpdateNotification, object: [Self.versionKey : version])
+		}
+	}
+	
+	static func save(_ version: Version) {
+		shared._currentVersion = version
+		guard let data = try? JSONEncoder().encode(version) else { return }
+		UserDefaults.standard.set(data, forKey: Self.versionKey)
+	}
+	
+	static func load() -> Version? {
+		guard
+			let existingData = UserDefaults.standard.object(forKey: versionKey) as? Data,
+			let version = try? JSONDecoder().decode(Version.self, from: existingData)
+		else {
+			shared._currentVersion = shared.defaultVersion
+			return nil
+		}
+		return version
+	}
 
+}
 
-    
-    
+extension Notification.Name {
+	
+	static let versionDidUpdateNotification = Notification.Name("com.byt.version.updated")
 }

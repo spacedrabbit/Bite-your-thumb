@@ -139,14 +139,14 @@ class FoaasViewController: UIViewController, FoaasSettingMenuDelegate {
 	private func registerForNotifications() {
 		let notificationCenter = NotificationCenter.default
 		notificationCenter.addObserver(self, selector: #selector(updateFoaas(sender:)), name: Notification.Name(rawValue: "FoaasObjectDidUpdate"), object: nil)
-		notificationCenter.addObserver(self, selector: #selector(updateSettingsLabel(from:)), name: Notification.Name(rawValue: VersionManager.versionDidUpdateNotification), object: nil)
+		notificationCenter.addObserver(self, selector: #selector(updateSettingsLabel(from:)), name: .versionDidUpdateNotification, object: nil)
 	}
 	
 	@objc
 	internal func updateSettingsLabel(from notification: Notification) {
 		guard
 			let userInfo = notification.userInfo,
-			let _ = userInfo[VersionManager.versionUpdatedKey]
+			let _ = userInfo[VersionManager.versionKey]
 		else {
 			return
 		}
