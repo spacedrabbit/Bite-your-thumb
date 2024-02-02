@@ -16,10 +16,10 @@ protocol FoaasAPIManagerDelegate: AnyObject {
 internal class FoaasAPIManager {
   private static let backgroundSessionIdentifier: String = "foaasBackgroundSession"
   
-  private static let debugURL = URL(string: "https://www.foaas.com/awesome/louis")!
-  private static let extendedDebugURL = URL(string: "https://www.foaas.com/greed/cat/louis")!
-  private static let extendedTwoDebugURL = URL(string: "https://www.foaas.com/madison/louis/paul")!
-  private static let operationsURL = URL(string: "https://www.foaas.com/operations")!
+  private static let debugURL = URL(string: "https://foaas.onrender.com/awesome/louis")!
+  private static let extendedDebugURL = URL(string: "https://foaas.onrender.com/greed/cat/louis")!
+  private static let extendedTwoDebugURL = URL(string: "https://foaas.onrender.com/madison/louis/paul")!
+  private static let operationsURL = URL(string: "https://foaas.onrender.com/operations")!
     static let colorSchemeURL = "https://api.fieldbook.com/v1/5873aaf1bc9912030079d388/color_schemes"
     static let versionURL = "https://api.fieldbook.com/v1/5873aaf1bc9912030079d388/version"
   

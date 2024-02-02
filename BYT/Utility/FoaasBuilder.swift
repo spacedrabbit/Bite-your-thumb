@@ -16,7 +16,7 @@ enum FoaasBuilderError: Error {
 class FoaasPathBuilder {
   var operation: FoaasOperation!
   var operationFields: [String : String]!
-  private let baseURLString: String = "https://www.foaas.com"
+  private let baseURLString: String = "https://foaas.onrender.com"
   
   /**
    Flattens an array of [FoaasField] with identical keys, into a one-dimensional array of [String:String] while performing
