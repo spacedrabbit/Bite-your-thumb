@@ -57,8 +57,8 @@ class FoaasSettingsMenuView: UIView, UIScrollViewDelegate, FoaasColorPickerViewD
     }
     
     func updateVersionLabels() {
-        self.versionNumberLabel.text = "V\(VersionManager.shared.currentVersion.number)"
-        self.versionMessageLabel.text = "\(VersionManager.shared.currentVersion.message.uppercased())"
+        self.versionNumberLabel.text = "V1.0" // "V\(VersionManager.shared.currentVersion.number)"
+        self.versionMessageLabel.text = "Fieldbook is no longer" // "\(VersionManager.shared.currentVersion.message.uppercased())"
     }
     
     private func configureConstraints() {

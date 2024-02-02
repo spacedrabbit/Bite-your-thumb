@@ -19,10 +19,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     ColorManager.shared.loadCurrentColorScheme()
     ColorManager.shared.loadColorSchemes()
-    VersionManager.shared.loadCurrentVersion()
+    //VersionManager.shared.loadCurrentVersion()
     
     FoaasDataManager.shared.requestOperations()
-    requestColorSchemes()
+    //requestColorSchemes()
     requestVersionInfo()
     
     let navigationVC = FoaasNavigationController(rootViewController: FoaasViewController())
@@ -32,19 +32,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   }
   
   func requestColorSchemes() {
-    FoaasDataManager.shared.requestColorSchemeData(endpoint: FoaasAPIManager.colorSchemeURL) { (data: Data?) in
-      guard let validData = data else { return }
-      guard let colorSchemes = ColorScheme.parseColorSchemes(from: validData) else { return }
-      ColorManager.shared.colorSchemes = colorSchemes
-      
-      var colorUpdateNotification = Notification(name: Notification.Name.init(rawValue: FoaasColorPickerView.colorViewsShouldUpdateNotification))
-      colorUpdateNotification.userInfo = [ FoaasColorPickerView.updatedColorsKey : ColorManager.shared.colorSchemes.map{ $0.primary }]
-      NotificationCenter.default.post(colorUpdateNotification)
-    }
+//    FoaasDataManager.shared.requestColorSchemeData(endpoint: FoaasService.colorSchemeURL) { (data: Data?) in
+//      guard let validData = data else { return }
+//      guard let colorSchemes = ColorScheme.parseColorSchemes(from: validData) else { return }
+//      ColorManager.shared.colorSchemes = colorSchemes
+//
+//      var colorUpdateNotification = Notification(name: Notification.Name.init(rawValue: FoaasColorPickerView.colorViewsShouldUpdateNotification))
+//      colorUpdateNotification.userInfo = [ FoaasColorPickerView.updatedColorsKey : ColorManager.shared.colorSchemes.map{ $0.primary }]
+//      NotificationCenter.default.post(colorUpdateNotification)
+//    }
   }
   
   func requestVersionInfo() {
-    FoaasDataManager.shared.requestVersionData(endpoint: FoaasAPIManager.versionURL) { (data: Data?) in
+    FoaasDataManager.shared.requestVersionData(endpoint: FoaasService.versionURL) { (data: Data?) in
       guard let validData = data else { return }
       guard let version = Version.parseVersion(from: validData) else { return }
       
