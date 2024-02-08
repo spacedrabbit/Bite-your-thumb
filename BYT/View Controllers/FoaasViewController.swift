@@ -181,18 +181,6 @@ class FoaasViewController: UIViewController, FoaasSettingMenuDelegate {
 		} catch {
 			print("Error happend: \(error)")
 		}
-		
-		
-		return
-		
-		guard let url = FoaasDataManager.foaasURL else { return }
-		
-		guard
-			let result = await Task(operation: { try? await FoaasService.getFoass(url: url) }).value
-		else { return }
-		foaas = result
-		foaasView.titleText = result.message
-		foaasView.subtitleText = result.subtitle
 	}
 	
 	

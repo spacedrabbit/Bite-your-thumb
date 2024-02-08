@@ -39,7 +39,7 @@ class FoaasDataManager {
 	}
 	
 	static func prefetchOperations() {
-		Task { await getOperations() }
+		Task { shared.operations = await getOperations() }
 	}
 	
 	// MARK: - Save/Load
