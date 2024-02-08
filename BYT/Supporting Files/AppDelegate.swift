@@ -20,7 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		ColorManager.shared.loadCurrentColorScheme()
 		ColorManager.shared.loadColorSchemes()
 		
-		let version = VersionManager.load()
+		// let version = VersionManager.load()
 		
 		FoaasDataManager.prefetchOperations()
 		//requestColorSchemes()

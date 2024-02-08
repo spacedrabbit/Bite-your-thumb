@@ -11,10 +11,10 @@ import Foundation
 class VersionManager {
 	
 	static let versionKey: String = "com.byt.version.key"
-	private var _currentVersion: Version = shared.defaultVersion
+	private lazy var _currentVersion: Version = defaultVersion
     
 	static var currentVersion: Version { shared._currentVersion }
-	static let shared: VersionManager = VersionManager()
+	static let shared = VersionManager()
 	
     private init() {}
 

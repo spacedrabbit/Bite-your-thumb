@@ -7,6 +7,48 @@
 //
 
 import Foundation
+import LouisSDK
+
+class SessionManager {
+	
+	static let shared = SessionManager()
+	
+	private let manager: RequestManager
+	private init() {
+		let config = URLSessionConfiguration.default
+		config.httpAdditionalHeaders = SessionManager.defaultHeaders
+		
+		let session = URLSession(configuration: config)
+		manager = RequestManagerFactory.make(with: session)
+	}
+	
+	private static let defaultHeaders: [String : String] = {
+		let acceptEncoding = "gzip;q=1.0, compress;q=0.5"
+		let accept = "application/json"
+		let platform = "iphone"
+		
+		// Add anything else that needs to be part of every request made
+		return ["Accept" : accept,
+				"Accept-Encoding" : acceptEncoding,
+				"Platform-Type" : platform]
+	}()
+	
+	func makeRequest<T>(_ request: FoaasRequest) async throws -> T where T: Mappable {
+		return try await manager.perform(request: request)
+	}
+	
+}
+
+struct FoaasRequest: HTTPRequest {
+	
+	var path: String
+	var headers: [String : String] = [:]
+	var host: String = "foaas.onrender.com"
+	
+	init(path: String) {
+		self.path = path
+	}
+}
 
 class FoaasService {
 	private static let backgroundSessionIdentifier: String = "foaasBackgroundSession"
@@ -22,6 +64,11 @@ class FoaasService {
 
 	// MARK: - GET Requests -
 	
+	static func getFoassSDK() async throws -> Foaas {
+		let request = FoaasRequest(path: "/greed/cat/louis")
+		return try await SessionManager.shared.makeRequest(request)
+	}
+	
 	class func getFoass(url: URL = FoaasService.extendedTwoDebugURL) async throws -> Foaas? {
 		do {
 			var request = URLRequest(url: url)
@@ -35,6 +82,11 @@ class FoaasService {
 			print("Error receiving foaas: \(e)")
 			return nil
 		}
+	}
+	
+	static func getOpsSDK() async throws -> [FoaasOperation] {
+		let request = FoaasRequest(path: "/operations")
+		return try await SessionManager.shared.makeRequest(request)
 	}
 	
 	class func getOperations() async throws -> [FoaasOperation] {

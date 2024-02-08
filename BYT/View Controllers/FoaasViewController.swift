@@ -173,6 +173,18 @@ class FoaasViewController: UIViewController, FoaasSettingMenuDelegate {
 	
 	// MARK: - Updating Foaas
 	internal func makeRequest() async {
+		do {
+			let result = try await FoaasService.getFoassSDK()
+			self.foaas = result
+			foaasView.titleText = result.message
+			foaasView.subtitleText = result.subtitle
+		} catch {
+			print("Error happend: \(error)")
+		}
+		
+		
+		return
+		
 		guard let url = FoaasDataManager.foaasURL else { return }
 		
 		guard

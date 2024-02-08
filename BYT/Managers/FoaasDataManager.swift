@@ -31,7 +31,7 @@ class FoaasDataManager {
 		}
 		
 		do {
-			return try await FoaasService.getOperations()
+			return try await FoaasService.getOpsSDK()
 		} catch (let e) {
 			print("Error encountered getting operations: \(e)")
 			return []

@@ -7,8 +7,9 @@
 //
 
 import Foundation
+import LouisSDK
 
-struct FoaasOperation: Codable {
+struct FoaasOperation: Codable, Mappable {
 	let name: String
 	let url: String
 	let fields: [FoaasField]

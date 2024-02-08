@@ -3,11 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		1408CAA11E494B1100AFC1AA /* FoaasColorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1408CAA01E494B1100AFC1AA /* FoaasColorView.swift */; };
+		1425E3842B74512F0024E168 /* LouisSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 1425E3832B74512F0024E168 /* LouisSDK */; };
 		1430C7521E457393002D904A /* Profanity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1430C7511E457393002D904A /* Profanity.swift */; };
 		1498A2FD1E3D7A4F003A3E5C /* FoaasColorPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1498A2FC1E3D7A4F003A3E5C /* FoaasColorPickerView.swift */; };
 		1498A3011E3E55E4003A3E5C /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1498A2FF1E3E55E4003A3E5C /* Version.swift */; };
@@ -125,6 +126,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1425E3842B74512F0024E168 /* LouisSDK in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -280,6 +282,9 @@
 			dependencies = (
 			);
 			name = BYT;
+			packageProductDependencies = (
+				1425E3832B74512F0024E168 /* LouisSDK */,
+			);
 			productName = BYT;
 			productReference = 14CFEBE61E3430C600BD46CF /* BYT.app */;
 			productType = "com.apple.product-type.application";
@@ -310,6 +315,9 @@
 				Base,
 			);
 			mainGroup = 14CFEBDD1E3430C600BD46CF;
+			packageReferences = (
+				1425E3822B74512F0024E168 /* XCRemoteSwiftPackageReference "LouisSDK" */,
+			);
 			productRefGroup = 14CFEBE71E3430C600BD46CF /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -510,7 +518,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -523,7 +532,10 @@
 				DEVELOPMENT_TEAM = 3457AE227Q;
 				INFOPLIST_FILE = "$(SRCROOT)/BYT/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = nyc.accessLite.BYT;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -538,7 +550,10 @@
 				DEVELOPMENT_TEAM = 3457AE227Q;
 				INFOPLIST_FILE = "$(SRCROOT)/BYT/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = nyc.accessLite.BYT;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -567,6 +582,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		1425E3822B74512F0024E168 /* XCRemoteSwiftPackageReference "LouisSDK" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/spacedrabbit/LouisSDK";
+			requirement = {
+				kind = exactVersion;
+				version = 0.0.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1425E3832B74512F0024E168 /* LouisSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1425E3822B74512F0024E168 /* XCRemoteSwiftPackageReference "LouisSDK" */;
+			productName = LouisSDK;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 14CFEBDE1E3430C600BD46CF /* Project object */;
 }

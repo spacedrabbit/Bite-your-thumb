@@ -7,8 +7,9 @@
 //
 
 import Foundation
+import LouisSDK
 
-struct Foaas: Codable {
+struct Foaas: Codable, Mappable {
 	
 	let message: String
 	let subtitle: String
