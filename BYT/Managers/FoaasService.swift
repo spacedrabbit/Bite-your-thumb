@@ -40,10 +40,13 @@ class SessionManager {
 }
 
 struct FoaasRequest: HTTPRequest {
-	
+	var host: String = "foaas.onrender.com"
 	var path: String
 	var headers: [String : String] = [:]
-	var host: String = "foaas.onrender.com"
+	var params: [String : Any] = [:]
+	var urlParams: [String : String?] = [:]
+	var addAuthorizationToken: Bool = false
+	var requestMethod: HTTPMethod = .get
 	
 	init(path: String) {
 		self.path = path
