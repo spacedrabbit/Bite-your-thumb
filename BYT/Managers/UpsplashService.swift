@@ -15,10 +15,12 @@ struct UpsplashImage: Decodable, Mappable {
 	let blurHash: String
 	let width: Int
 	let height: Int
-	let description: String
+	let description: String?
+	let urls: URLBundle
 	
 	struct URLBundle: Decodable, Mappable {
 		let full: URL
+		let regular: URL
 		let small: URL
 		let thumb: URL
 	}

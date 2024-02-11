@@ -13,6 +13,12 @@ import Combine
 class FoaasViewController: UIViewController, FoaasSettingMenuDelegate {
 	
 	// MARK: - View
+	let backgroundImage: UIImageView = {
+		let imageView = UIImageView(frame: .zero)
+		imageView.contentMode = .scaleAspectFill
+		return imageView
+	}()
+	
 	let foaasView: FoaasView = FoaasView(frame: CGRect.zero)
 	let foaasSettingsMenuView: FoaasSettingsMenuView = FoaasSettingsMenuView(frame: CGRect.zero)
 	
@@ -28,10 +34,30 @@ class FoaasViewController: UIViewController, FoaasSettingMenuDelegate {
 	
 	private var cancellables: Set<AnyCancellable> = []
 	
+	// MARK: - Constructors
+	
+	override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+		super.init(nibName: nil, bundle: nil)
+		
+		self.view.backgroundColor = .white
+		self.view.addSubview(foaasSettingsMenuView)
+		self.view.addSubview(backgroundImage)
+		self.view.addSubview(foaasView)
+		
+		foaasView.backgroundColor = .clear // ColorManager.shared.currentColorScheme.primary
+		configureConstraints()
+		//reload()
+	}
+	
+	required init?(coder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
+	}
+	
 	// MARK: - View Lifecycle
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
+		reload()
 		self.foaasSettingsMenuView.delegate = self
 		
 		foaasView.actionButtonPublisher
@@ -53,14 +79,15 @@ class FoaasViewController: UIViewController, FoaasSettingMenuDelegate {
 				self.foaasView.layoutIfNeeded()
 			}.store(in: &cancellables)
 		
-		setupViewHierarchy()
-		configureConstraints()
+		
 		addGesturesAndActions()
 		registerForNotifications()
 		addFoaasViewShadow()
 		updateSettingsMenu()
 		
-		Task { await makeRequest() }
+		Task {
+			await makeRequest()
+		}
 		
 	}
 	
@@ -77,10 +104,35 @@ class FoaasViewController: UIViewController, FoaasSettingMenuDelegate {
 		self.foaasSettingsMenuView.foaasColorPickerView?.setCurrentIndex(ColorManager.shared.colorSchemeIndex())
 	}
 	
+	// MARK: - Reload
+	
+	private func reload() {
+		
+		guard let screen = ScenePeeker.shared.rootWindow?.screen else { return }
+		Task {
+			do {
+				let image = try await UpsplashService.getRandomImage(size: screen.bounds.size, scale: screen.scale)
+				DispatchQueue.main.async {
+					self.backgroundImage.image = UIImage(blurHash: image.blurHash, size: screen.bounds.size)
+				}
+				
+				let request = URLRequest(url: image.urls.regular)
+				let result = try await URLSession.shared.perform(request: request)
+				DispatchQueue.main.async {
+					self.backgroundImage.image = UIImage(data: result.0)
+				}
+				
+			} catch {
+				print("Error attempting to load image/blurhash: \(error)")
+			}
+		}
+		
+	}
 	
 	// MARK: - Setup
 	private func configureConstraints() {
 		self.foaasView.translatesAutoresizingMaskIntoConstraints = false
+		self.backgroundImage .translatesAutoresizingMaskIntoConstraints = false
 		self.foaasSettingsMenuView.translatesAutoresizingMaskIntoConstraints = false
 		
 		self.settingsMenuBottomConstraint = foaasSettingsMenuView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 100)
@@ -97,14 +149,11 @@ class FoaasViewController: UIViewController, FoaasSettingMenuDelegate {
 			foaasView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
 			foaasView.heightAnchor.constraint(equalTo: self.view.heightAnchor),
 			foaasBottomConstraint!,
+			backgroundImage.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+			backgroundImage.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+			backgroundImage.topAnchor.constraint(equalTo: self.view.topAnchor),
+			backgroundImage.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
 		].activate()
-	}
-	
-	private func setupViewHierarchy() {
-		self.view.backgroundColor = .white
-		self.view.addSubview(foaasSettingsMenuView)
-		self.view.addSubview(foaasView)
-		self.foaasView.backgroundColor = ColorManager.shared.currentColorScheme.primary
 	}
 	
 	private func updateSettingsMenu() {
@@ -136,6 +185,7 @@ class FoaasViewController: UIViewController, FoaasSettingMenuDelegate {
 	
 	
 	// MARK: - Notifications
+	
 	private func registerForNotifications() {
 		let notificationCenter = NotificationCenter.default
 		notificationCenter.addObserver(self, selector: #selector(updateFoaas(sender:)), name: Notification.Name(rawValue: "FoaasObjectDidUpdate"), object: nil)
