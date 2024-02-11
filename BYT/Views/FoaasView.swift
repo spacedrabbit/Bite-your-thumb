@@ -17,7 +17,6 @@ class FoaasCollectionCell: UICollectionViewCell {
 		let label = UILabel()
 		label.font = UIFont.Roboto.light(size: 32.0)
 		label.textColor = UIColor.white
-//		label.adjustsFontSizeToFitWidth = true
 		label.numberOfLines = 0
 		
 		return label
@@ -27,8 +26,6 @@ class FoaasCollectionCell: UICollectionViewCell {
 		let label = UILabel()
 		label.font = UIFont.Roboto.regular(size: 24.0)
 		label.textColor = UIColor.white
-		label.alpha = 0.7
-//		label.adjustsFontSizeToFitWidth = true
 		label.numberOfLines = 0
 		return label
 	}()
@@ -39,7 +36,7 @@ class FoaasCollectionCell: UICollectionViewCell {
 		super.init(frame: .zero)
 		
 		self.contentView.addSubviews([titleLabel, subtitleLabel])
-		configureConstraints()
+		 configureConstraints()
 		
 		$foaas.sink { foaas in
 			guard let foaas else { return }
@@ -62,19 +59,15 @@ class FoaasCollectionCell: UICollectionViewCell {
 	private func configureConstraints() {
 		stripAutoResizingMasks([titleLabel, subtitleLabel])
 		
-//		titleLabel.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
-//		subtitleLabel.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
-		
 		[
-			titleLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 12.0),
-			titleLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 12.0),
-			titleLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: 0.0),
+			titleLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 20.0),
+			titleLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 20.0),
+			titleLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -20.0),
 			
-			subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12.0),
-			subtitleLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 12.0),
-			subtitleLabel.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -12.0),
+			subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20.0),
+			subtitleLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 20.0),
+			subtitleLabel.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: 20.0),
 		].activate()
-		
 	}
 	
 	override func layoutSubviews() {
@@ -82,6 +75,7 @@ class FoaasCollectionCell: UICollectionViewCell {
 		configureConstraints()
 	}
 }
+
 //
 //class FoaasView: UIView {
 //	@Published var titleText: String?

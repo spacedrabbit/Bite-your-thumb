@@ -39,17 +39,13 @@ class FoaasViewController: UICollectionViewController {
 	// MARK: - Constructors
 	
 	override init(collectionViewLayout: UICollectionViewLayout = UICollectionViewFlowLayout()) {
-		let flow = UICollectionViewFlowLayout()
-		flow.minimumLineSpacing = 0.0
-		flow.minimumInteritemSpacing = 0.0
-		flow.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
-		
-		super.init(collectionViewLayout: flow)
+		super.init(collectionViewLayout: collectionViewLayout)
 		
 		self.collectionView.backgroundColor = .green
 		// self.collectionView.backgroundView = backgroundImage
 		self.collectionView.refreshControl = refreshControl
 
+		self.collectionView.collectionViewLayout = generateLayout()
 		self.collectionView.register(FoaasCollectionCell.self, forCellWithReuseIdentifier: Identifiers.foaasCell)
 		
 		configureConstraints()
@@ -94,6 +90,7 @@ class FoaasViewController: UICollectionViewController {
 			refreshControl.endRefreshing()
 			self.collectionView.reloadData()
 		} catch {
+			refreshControl.endRefreshing()
 			print("Error happend: \(error)")
 		}
 	}
@@ -114,6 +111,15 @@ class FoaasViewController: UICollectionViewController {
 	private func generateItems() {
 		guard let foaas else { return }
 		self.items = [.foaas(foaas)]
+	}
+	
+	private func generateLayout() -> UICollectionViewCompositionalLayout {
+		let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(50.0))
+		let item = NSCollectionLayoutItem(layoutSize: itemSize)
+		let group = NSCollectionLayoutGroup.horizontal(layoutSize: itemSize, subitems: [item])
+		let section = NSCollectionLayoutSection(group: group)
+		
+		return UICollectionViewCompositionalLayout(section: section)
 	}
 	
 	// MARK: - Notifications
