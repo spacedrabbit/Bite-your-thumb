@@ -7,46 +7,54 @@
 //
 
 import UIKit
-import Social
 import Combine
+import Kingfisher
 
-class FoaasViewController: UIViewController, FoaasSettingMenuDelegate {
-	
-	// MARK: - View
-	let backgroundImage: UIImageView = {
+class FoaasViewController: UICollectionViewController {
+
+	private let backgroundImage: UIImageView = {
 		let imageView = UIImageView(frame: .zero)
 		imageView.contentMode = .scaleAspectFill
 		return imageView
 	}()
 	
-	let foaasView: FoaasView = FoaasView(frame: CGRect.zero)
-	let foaasSettingsMenuView: FoaasSettingsMenuView = FoaasSettingsMenuView(frame: CGRect.zero)
+	private lazy var refreshControl: UIRefreshControl = {
+		let control = UIRefreshControl()
+		control.addTarget(self, action: #selector(reload), for: .valueChanged)
+		return control
+	}()
 	
-	// MARK: - Constraints
-	var settingsMenuBottomConstraint: NSLayoutConstraint? = nil
-	var foaasBottomConstraint: NSLayoutConstraint? = nil
-	let defaults: UserDefaults = UserDefaults.standard
+	private struct Identifiers {
+		static let foaasCell = "foaasCell"
+	}
 	
-	// MARK: - Models
-	var foaas: Foaas?
-	var message = ""
-	var subtitle = ""
+	private var foaas: Foaas?
+	private var items: [Item] = []
+	private enum Item {
+		case foaas(Foaas)
+	}
 	
 	private var cancellables: Set<AnyCancellable> = []
 	
 	// MARK: - Constructors
 	
-	override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-		super.init(nibName: nil, bundle: nil)
+	override init(collectionViewLayout: UICollectionViewLayout = UICollectionViewFlowLayout()) {
+		let flow = UICollectionViewFlowLayout()
+		flow.minimumLineSpacing = 0.0
+		flow.minimumInteritemSpacing = 0.0
+		flow.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
 		
-		self.view.backgroundColor = .white
-		self.view.addSubview(foaasSettingsMenuView)
-		self.view.addSubview(backgroundImage)
-		self.view.addSubview(foaasView)
+		super.init(collectionViewLayout: flow)
 		
-		foaasView.backgroundColor = .clear // ColorManager.shared.currentColorScheme.primary
+		self.collectionView.backgroundColor = .green
+		// self.collectionView.backgroundView = backgroundImage
+		self.collectionView.refreshControl = refreshControl
+
+		self.collectionView.register(FoaasCollectionCell.self, forCellWithReuseIdentifier: Identifiers.foaasCell)
+		
 		configureConstraints()
-		//reload()
+		registerForNotifications()
+		reload()
 	}
 	
 	required init?(coder: NSCoder) {
@@ -57,285 +65,73 @@ class FoaasViewController: UIViewController, FoaasSettingMenuDelegate {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		reload()
-		self.foaasSettingsMenuView.delegate = self
-		
-		foaasView.actionButtonPublisher
-			.receive(on: DispatchQueue.main)
-			.sink { [unowned self] btn in
-				self.didTapActionButton()
-			}.store(in: &cancellables)
-		
-		foaasView.settingsButtonPublisher
-			.receive(on: DispatchQueue.main)
-			.sink { [unowned self] btn in
-				self.didTapSettingsButton()
-			}.store(in: &cancellables)
-		
-		foaasView.subtitleLabelConstraint
-			.eraseToAnyPublisher()
-			.receive(on: DispatchQueue.main)
-			.sink { constraint in
-				self.foaasView.layoutIfNeeded()
-			}.store(in: &cancellables)
-		
-		
-		addGesturesAndActions()
-		registerForNotifications()
-		addFoaasViewShadow()
-		updateSettingsMenu()
-		
-		Task {
-			await makeRequest()
-		}
-		
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
-		
-		UIView.animate(withDuration: 0.3) {
-			self.foaasView.alpha = 1.0
-		}
-		
-		// this must be called after the views have been laid out and drawn to the screen.
-		// otherwise this gradient wont work
-		self.foaasSettingsMenuView.foaasColorPickerView?.applyGradient()
-		self.foaasSettingsMenuView.foaasColorPickerView?.setCurrentIndex(ColorManager.shared.colorSchemeIndex())
+	}
+	
+	private func configureConstraints() {
+
 	}
 	
 	// MARK: - Reload
 	
+	@objc
 	private func reload() {
-		
-		guard let screen = ScenePeeker.shared.rootWindow?.screen else { return }
 		Task {
-			do {
-				let image = try await UpsplashService.getRandomImage(size: screen.bounds.size, scale: screen.scale)
-				DispatchQueue.main.async {
-					self.backgroundImage.image = UIImage(blurHash: image.blurHash, size: screen.bounds.size)
-				}
-				
-				let request = URLRequest(url: image.urls.regular)
-				let result = try await URLSession.shared.perform(request: request)
-				DispatchQueue.main.async {
-					self.backgroundImage.image = UIImage(data: result.0)
-				}
-				
-			} catch {
-				print("Error attempting to load image/blurhash: \(error)")
-			}
-		}
-		
-	}
-	
-	// MARK: - Setup
-	private func configureConstraints() {
-		self.foaasView.translatesAutoresizingMaskIntoConstraints = false
-		self.backgroundImage .translatesAutoresizingMaskIntoConstraints = false
-		self.foaasSettingsMenuView.translatesAutoresizingMaskIntoConstraints = false
-		
-		self.settingsMenuBottomConstraint = foaasSettingsMenuView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 100)
-		self.foaasBottomConstraint = foaasView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0)
-		
-		[
-			// foaasSettingMenuView
-			foaasSettingsMenuView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-			foaasSettingsMenuView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-			foaasSettingsMenuView.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.333),
-			settingsMenuBottomConstraint!,
-			// foaasView
-			foaasView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-			foaasView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-			foaasView.heightAnchor.constraint(equalTo: self.view.heightAnchor),
-			foaasBottomConstraint!,
-			backgroundImage.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-			backgroundImage.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-			backgroundImage.topAnchor.constraint(equalTo: self.view.topAnchor),
-			backgroundImage.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-		].activate()
-	}
-	
-	private func updateSettingsMenu() {
-		self.foaasSettingsMenuView.updateVersionLabels()
-	}
-	
-	// MARK: - FoaasView Shadow
-	func addFoaasViewShadow() {
-		self.foaasView.layer.shadowColor = UIColor.black.cgColor
-		self.foaasView.layer.shadowOpacity = 0.8
-		self.foaasView.layer.shadowOffset = CGSize.zero
-		self.foaasView.layer.shadowRadius = 8
-	}
-	
-	// MARK: - Gesture Actions
-	private func addGesturesAndActions() {
-		let swipeUpGesture = UISwipeGestureRecognizer(target: self, action: #selector(toggleSettingsMenu(sender:)))
-		swipeUpGesture.direction = .up
-		foaasView.addGestureRecognizer(swipeUpGesture)
-		
-		let swipeDownGesture = UISwipeGestureRecognizer(target: self, action: #selector(toggleSettingsMenu(sender:)))
-		swipeDownGesture.direction = .down
-		foaasView.addGestureRecognizer(swipeDownGesture)
-		
-		let swipeLeftGesture = UISwipeGestureRecognizer(target: self, action: #selector(didTapActionButton))
-		swipeLeftGesture.direction = .left
-		foaasView.addGestureRecognizer(swipeLeftGesture)
-	}
-	
-	
-	// MARK: - Notifications
-	
-	private func registerForNotifications() {
-		let notificationCenter = NotificationCenter.default
-		notificationCenter.addObserver(self, selector: #selector(updateFoaas(sender:)), name: Notification.Name(rawValue: "FoaasObjectDidUpdate"), object: nil)
-		notificationCenter.addObserver(self, selector: #selector(updateSettingsLabel(from:)), name: .versionDidUpdateNotification, object: nil)
-	}
-	
-	@objc
-	internal func updateSettingsLabel(from notification: Notification) {
-		guard
-			let userInfo = notification.userInfo,
-			let _ = userInfo[VersionManager.versionKey]
-		else {
-			return
-		}
-		
-		DispatchQueue.main.async { [unowned self] in
-			self.foaasSettingsMenuView.updateVersionLabels()
+			await getLandingMessage()
+			// await getBackgroundImage()
 		}
 	}
 	
-	@objc
-	internal func updateFoaas(sender: Notification) {
-		guard let validFoaas = sender.object as? Foaas else {
-			print("The notification center did not register a Foaas Object. Fix your bug bro.")
-			return
-		}
-		
-		foaasView.titleText = validFoaas.message
-		foaasView.subtitleText = validFoaas.subtitle
-		
-		let newConstraintConstant = foaasView.subtitleLabelConstraint.value.constant - CGFloat(validFoaas.subtitle.count) * 1.5
-		foaasView.subtitleLabelConstraint.value.constant = min(16.0, newConstraintConstant)
-		self.foaas = validFoaas
-	}
-	
-	// MARK: - Updating Foaas
-	internal func makeRequest() async {
+	private func getLandingMessage() async {
 		do {
 			let result = try await FoaasService.getFoassSDK()
-			self.foaas = result
-			foaasView.titleText = result.message
-			foaasView.subtitleText = result.subtitle
+			foaas = result
+			generateItems()
+			
+			refreshControl.endRefreshing()
+			self.collectionView.reloadData()
 		} catch {
 			print("Error happend: \(error)")
 		}
 	}
 	
+	private func getBackgroundImage() async {
+		guard let screen = ScenePeeker.shared.rootWindow?.screen else { return }
+		do {
+			let image = try await UpsplashService.getRandomImage(size: screen.bounds.size, scale: screen.scale)
+			self.backgroundImage.image = UIImage(blurHash: image.blurHash, size: screen.bounds.size)
+			self.backgroundImage.kf.setImage(with: image.urls.regular)
+		} catch {
+			print("Error attempting to load image/blurhash: \(error)")
+		}
+	}
 	
-	// MARK: - View Delegate
+	// MARK: - Helpers
 	
-	@objc
-	func didTapActionButton() {
-		guard let navVC = self.navigationController else { return }
+	private func generateItems() {
+		guard let foaas else { return }
+		self.items = [.foaas(foaas)]
+	}
+	
+	// MARK: - Notifications
+	
+	private func registerForNotifications() {
 		
-		let dtvc = FoaasOperationsTableViewController()
-		navVC.pushViewController(dtvc, animated: true)
-	}
-	
-	func didTapSettingsButton() {
-		if self.foaasView.frame.origin.y == 0 {
-			animateSettingsMenu(show: true, duration: 0.8, dampening: 0.7, springVelocity: 7)
-		} else {
-			animateSettingsMenu(show: false, duration: 0.1)
-		}
-	}
-	
-	
-	// MARK: - Animating Menu
-	@objc
-	internal func toggleSettingsMenu(sender: UISwipeGestureRecognizer) {
-		switch sender.direction {
-		case .up where self.foaasView.frame.origin.y == 0:
-			animateSettingsMenu(show: true, duration: 0.8, dampening: 0.7, springVelocity: 7)
-		case .down where self.foaasView.frame.origin.y != 0:
-			animateSettingsMenu(show: false, duration: 0.1)
-		default: print("Not interested")
-		}
-	}
-	
-	private func animateSettingsMenu(show: Bool, duration: TimeInterval, dampening: CGFloat = 0.005, springVelocity: CGFloat = 0.005) {
-		self.settingsMenuBottomConstraint?.constant = show ? 0.0 : 100.0
-		self.foaasBottomConstraint?.constant = show ? -(self.foaasSettingsMenuView.frame.height) : 0
-//		self.foaasView.settingsMenuButton.transform = show ? CGAffineTransform(rotationAngle: CGFloat.pi) : CGAffineTransform.identity
-		UIView.animate(withDuration: duration, delay: 0.0, usingSpringWithDamping: dampening, initialSpringVelocity: springVelocity, options: .curveEaseOut, animations: {
-			self.view.layoutIfNeeded()
-		}, completion: nil)
-	}
-	
-	
-	// MARK: - FoaasSettingMenuDelegate Method
-	func colorSwitcherScrollViewScrolled() {
-		UIView.animate(withDuration: 0.3) {
-			self.foaasView.backgroundColor = ColorManager.shared.currentColorScheme.primary
-//			self.foaasView.addButton.backgroundColor = ColorManager.shared.currentColorScheme.accent
-//			self.foaasView.settingsMenuButton.tintColor = ColorManager.shared.currentColorScheme.accent
-			self.foaasSettingsMenuView.updateButtonColors()
-			self.view.layoutIfNeeded()
-		}
-	}
-	
-	
-	func profanitfySwitchToggled(on: Bool) {
-		guard let validFoaas = self.foaas else { return }
-		
-		LanguageFilter.profanityAllowed = on
-//		self.foaasView.mainTextLabel.text = validFoaas.message.filterBadLanguage()
-//		self.foaasView.subtitleTextLabel.text = validFoaas.subtitle.filterBadLanguage()
-	}
-	
-	func twitterButtonTapped() {
-		sharePostTo(serviceType: SLServiceTypeTwitter)
-	}
-	
-	func facebookButtonTapped() {
-		sharePostTo(serviceType: SLServiceTypeFacebook)
-	}
-	
-	func aboutButtonTapped() {
-		guard let navVC = self.navigationController else { return }
-		
-		let dtvc = FoaasAboutViewController()
-		navVC.pushViewController(dtvc, animated: true)
-	}
-	
-	// this function shares the current foaas message to twitter or facebook. Will need to add to the message with a BYT tag and also will need to be filtered if the filter is on. Will also need to be the string that gets passed back from operations VC
-	
-	func sharePostTo(serviceType: String!) {
-		if let vc = SLComposeViewController(forServiceType: serviceType) {
-			guard let validImage = getScreenShotImage(view: self.view) else { return }
-			//            vc.setInitialText(self.foaas!.description)
-			vc.add(validImage)
-			vc.add(URL(string: "https://github.com/AccessLite/BYT-Golden")!)
-			present(vc, animated: true, completion: nil)
-		}
 	}
 	
 	func camerarollButtonTapped() {
-		print("cameraroll button tapped")
 		guard let validImage = getScreenShotImage(view: self.view) else { return }
+		
 		//https://developer.apple.com/reference/uikit/1619125-uiimagewritetosavedphotosalbum
 		UIImageWriteToSavedPhotosAlbum(validImage, self, #selector(createScreenShotCompletion(image: didFinishSavingWithError: contextInfo:)), nil)
-		
-		//after the screenshot is saved, the settings menu will animate back into it's original position (show: true).
-		//this will give the false impression that the screenshot includes the settings menu because of how quickly it occurs.
-		animateSettingsMenu(show: true, duration: 0.1)
 	}
 	
 	func shareButtonTapped() {
-		print("share button tapped")
 		guard let validFoaas = self.foaas else { return }
+		
 		var arrayToShare: [String] = []
 		arrayToShare.append(validFoaas.message.filterBadLanguage())
 		arrayToShare.append(validFoaas.subtitle.filterBadLanguage())
@@ -346,22 +142,20 @@ class FoaasViewController: UIViewController, FoaasSettingMenuDelegate {
 		self.present(activityViewController, animated: true, completion: nil)
 	}
 	
-	func uploadData() {
-		self.view.reloadInputViews()
-	}
-	
-	//MARK: - Helper functions
-	///Get current screenshot
 	func getScreenShotImage(view: UIView) -> UIImage? {
+		return nil
+		
 		//https://developer.apple.com/reference/uikit/1623912-uigraphicsbeginimagecontextwitho
 		
 		//shortly before the graphics context for the view is determined, the settings menu will animate down (show: false)
-		animateSettingsMenu(show: false, duration: 0.1)
+		// animateSettingsMenu(show: false, duration: 0.1)
 		
 		//removing visibility for the add and settings menu button shortly before the screenshot is rendered
-		foaasView.hideHudElements.send(true)
+		// foaasView.hideHudElements.send(true)
 
 		//initializing and adding the watermark label as a subview
+		
+		/*
 		let label: UILabel = UILabel()
 		label.text = "GITHUB: ACCESSLITE/BYT"
 		label.textColor = UIColor.white
@@ -410,6 +204,7 @@ class FoaasViewController: UIViewController, FoaasSettingMenuDelegate {
 		label.text = ""
 		
 		return image
+		 */
 	}
 	
 	///Present appropriate Alert by UIAlertViewController, indicating images are successfully saved or not
@@ -438,3 +233,23 @@ class FoaasViewController: UIViewController, FoaasSettingMenuDelegate {
 	}
 }
 
+extension FoaasViewController: UICollectionViewDelegateFlowLayout {
+	
+	override func numberOfSections(in collectionView: UICollectionView) -> Int {
+		return 1
+	}
+	
+	override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+		return items.count
+	}
+	
+	override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+		switch items[indexPath.item] {
+		case .foaas(let f):
+			let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifiers.foaasCell, for: indexPath) as! FoaasCollectionCell
+			cell.foaas = f
+			return cell
+		}
+	}
+
+}

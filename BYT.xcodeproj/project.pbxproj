@@ -37,6 +37,7 @@
 		14E09D942B783F9200E36A45 /* BlurHashDecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E09D932B783F9200E36A45 /* BlurHashDecode.swift */; };
 		14E09D962B78400D00E36A45 /* UpsplashService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E09D952B78400D00E36A45 /* UpsplashService.swift */; };
 		14E09D9A2B78523500E36A45 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E09D992B78523500E36A45 /* SceneDelegate.swift */; };
+		14E09D9D2B785D2E00E36A45 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 14E09D9C2B785D2E00E36A45 /* Kingfisher */; };
 		473EA5C41E3E7E6100DD35C9 /* Roboto-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 473EA5B21E3E7E6100DD35C9 /* Roboto-Black.ttf */; };
 		473EA5C51E3E7E6100DD35C9 /* Roboto-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 473EA5B31E3E7E6100DD35C9 /* Roboto-BlackItalic.ttf */; };
 		473EA5C61E3E7E6100DD35C9 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 473EA5B41E3E7E6100DD35C9 /* Roboto-Bold.ttf */; };
@@ -133,6 +134,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				14E09D9D2B785D2E00E36A45 /* Kingfisher in Frameworks */,
 				1425E3842B74512F0024E168 /* LouisSDK in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -303,6 +305,7 @@
 			name = BYT;
 			packageProductDependencies = (
 				1425E3832B74512F0024E168 /* LouisSDK */,
+				14E09D9C2B785D2E00E36A45 /* Kingfisher */,
 			);
 			productName = BYT;
 			productReference = 14CFEBE61E3430C600BD46CF /* BYT.app */;
@@ -336,6 +339,7 @@
 			mainGroup = 14CFEBDD1E3430C600BD46CF;
 			packageReferences = (
 				1425E3822B74512F0024E168 /* XCRemoteSwiftPackageReference "LouisSDK" */,
+				14E09D9B2B785D2E00E36A45 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			productRefGroup = 14CFEBE71E3430C600BD46CF /* Products */;
 			projectDirPath = "";
@@ -614,6 +618,14 @@
 				version = 0.0.2;
 			};
 		};
+		14E09D9B2B785D2E00E36A45 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -621,6 +633,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1425E3822B74512F0024E168 /* XCRemoteSwiftPackageReference "LouisSDK" */;
 			productName = LouisSDK;
+		};
+		14E09D9C2B785D2E00E36A45 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 14E09D9B2B785D2E00E36A45 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
