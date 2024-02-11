@@ -68,7 +68,12 @@ class UpsplashSessionManager {
 	}()
 	
 	func makeRequest<T>(_ request: UpsplashRequest) async throws -> T where T: Mappable {
-		return try await manager.perform(request: request)
+		do {
+			return try await manager.perform(request: request)
+		} catch (let error) {
+			print("Error encountered on upsplash request: \(error)")
+			throw error
+		}
 	}
 	
 }

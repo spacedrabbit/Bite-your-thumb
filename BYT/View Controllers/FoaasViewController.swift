@@ -41,8 +41,8 @@ class FoaasViewController: UICollectionViewController {
 	override init(collectionViewLayout: UICollectionViewLayout = UICollectionViewFlowLayout()) {
 		super.init(collectionViewLayout: collectionViewLayout)
 		
-		self.collectionView.backgroundColor = .green
-		// self.collectionView.backgroundView = backgroundImage
+//		self.collectionView.backgroundColor = .green
+		self.collectionView.backgroundView = backgroundImage
 		self.collectionView.refreshControl = refreshControl
 
 		self.collectionView.collectionViewLayout = generateLayout()
@@ -75,34 +75,35 @@ class FoaasViewController: UICollectionViewController {
 	
 	@objc
 	private func reload() {
-		Task {
-			await getLandingMessage()
-			// await getBackgroundImage()
-		}
-	}
-	
-	private func getLandingMessage() async {
-		do {
-			let result = try await FoaasService.getFoassSDK()
-			foaas = result
-			generateItems()
-			
-			refreshControl.endRefreshing()
-			self.collectionView.reloadData()
-		} catch {
-			refreshControl.endRefreshing()
-			print("Error happend: \(error)")
-		}
-	}
-	
-	private func getBackgroundImage() async {
 		guard let screen = ScenePeeker.shared.rootWindow?.screen else { return }
-		do {
-			let image = try await UpsplashService.getRandomImage(size: screen.bounds.size, scale: screen.scale)
-			self.backgroundImage.image = UIImage(blurHash: image.blurHash, size: screen.bounds.size)
-			self.backgroundImage.kf.setImage(with: image.urls.regular)
-		} catch {
-			print("Error attempting to load image/blurhash: \(error)")
+		
+		// A TaskGroup is a little too much overhead for what I'm trying to do here...
+		// https://www.hackingwithswift.com/quick-start/concurrency/how-to-handle-different-result-types-in-a-task-group
+		// However, async let works pretty well.
+		// https://stackoverflow.com/a/74567065/3833368
+		// Now, I'm curious though if the async call to KF is also considered part of this task, and so the loading
+		// of the image also becomes part of the requirements for the Task to complete...
+		// The answer: it isn't. In practice, I will see the blurhash image loaded before the full render
+		Task {
+			async let foaas = FoaasService.getFoassSDK()
+			async let image = UpsplashService.getRandomImage(size: screen.bounds.size, scale: screen.scale)
+			
+			do {
+				let result = (try await foaas, try await image)
+				
+				self.foaas = result.0
+				self.backgroundImage.kf.setImage(with: result.1.urls.regular,
+												 placeholder: UIImage(blurHash: result.1.blurHash, size: screen.bounds.size))
+				
+				self.generateItems()
+				self.collectionView.reloadData()
+			} catch {
+				print("Error encounted on reload: \(error)")
+			}
+			
+			if self.refreshControl.isRefreshing {
+				self.refreshControl.endRefreshing()
+			}
 		}
 	}
 	
