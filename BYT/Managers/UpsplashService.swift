@@ -40,7 +40,7 @@ struct UpsplashImage: Codable, Mappable {
 	// 	should I decide to submit this to the app store, I will need to switch to using this API for
 	//  caching images to disk
 	// 	Alternatively, it sounds like I could defer this operation until/if a user shares, screenshots,
-	//  or otherwise saves the foaas they create. 
+	//  or otherwise saves the foaas they create.
 	struct LinksBundle: Codable, Mappable {
 		let downloadLocation: URL
 	}
@@ -269,12 +269,15 @@ class UpsplashSessionManager {
 }
 
 struct UpsplashRequest: HTTPRequest {
+	var scheme: String = "https"
 	var host: String = "api.unsplash.com"
 	var path: String
 	var urlParams: [String : String?]
 	
 	var params: [String : Any] = [:]
-	var headers: [String : String] = [:]
+	var headers: [String : String] = [
+		"Content-Type" : "application/json"
+	]
 	var addAuthorizationToken: Bool = false
 	var requestMethod: HTTPMethod
 	

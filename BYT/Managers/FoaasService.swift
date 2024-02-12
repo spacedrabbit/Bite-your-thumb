@@ -14,7 +14,14 @@ class SessionManager {
 	static let shared = SessionManager()
 	
 	private let manager: RequestManager
+	private let printRequest: Bool
 	private init() {
+		#if DEBUG
+		printRequest = true
+		#else
+		printRequest = false
+		#endif
+		
 		let config = URLSessionConfiguration.default
 		config.httpAdditionalHeaders = SessionManager.defaultHeaders
 		
@@ -34,15 +41,22 @@ class SessionManager {
 	}()
 	
 	func makeRequest<T>(_ request: FoaasRequest) async throws -> T where T: Mappable {
+		if printRequest {
+			request.debugPrint()
+		}
+		
 		return try await manager.perform(request: request)
 	}
 	
 }
 
 struct FoaasRequest: HTTPRequest {
+	var scheme: String = "https"
 	var host: String = "foaas.onrender.com"
 	var path: String
-	var headers: [String : String] = [:]
+	var headers: [String : String] = [
+		"Content-Type" : "application/json"
+	]
 	var params: [String : Any] = [:]
 	var urlParams: [String : String?] = [:]
 	var addAuthorizationToken: Bool = false
@@ -51,6 +65,10 @@ struct FoaasRequest: HTTPRequest {
 	init(path: String) {
 		self.path = path
 	}
+}
+
+enum FoaasError: Error {
+	case testError
 }
 
 class FoaasService {
