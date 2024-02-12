@@ -16,13 +16,57 @@ struct UpsplashImage: Decodable, Mappable {
 	let width: Int
 	let height: Int
 	let description: String?
+	let altDescription: String?
+	
 	let urls: URLBundle
+	let links: LinksBundle
+	let user: User?
 	
 	struct URLBundle: Decodable, Mappable {
 		let full: URL
 		let regular: URL
 		let small: URL
 		let thumb: URL
+	}
+	
+	// According the upsplash api, this url must be used to download images in order to properly credit the author.
+	// However, this requires an api request and since I'm limitied to 50/hr, I'm not going to do that
+	// for a pet project. I'm leaving this note here for the future should I decide to submit this to the
+	// app store, I will need to switch to using this API for caching images to disk
+	struct LinksBundle: Decodable, Mappable {
+		let downloadLocation: URL
+	}
+	
+	struct User: Decodable, Mappable {
+		let id: String
+		let username: String
+		let name: String?
+		let firstName: String?
+		let lastName: String?
+		
+		let links: UpsplashLinks
+		let profileImage: ProfileImageLinks
+		let social: SocialLinks
+		
+		struct UpsplashLinks: Decodable, Mappable {
+			let profile: URL?
+			
+			enum CodingKeys: String, CodingKey {
+				case profile = "html"
+			}
+		}
+		
+		struct ProfileImageLinks: Decodable, Mappable {
+			let small: URL?
+			let medium: URL?
+			let large: URL?
+		}
+		
+		struct SocialLinks: Decodable, Mappable {
+			let instagram: String?
+			let portfolio: String?
+			let twitter: String?
+		}
 	}
 }
 
@@ -36,6 +80,18 @@ class UpsplashService {
 										 "dpr" : "\(Int(scale))"]
 		let request = UpsplashRequest(path: "/photos/random", urlParams: params)
 		
+		return try await UpsplashSessionManager.shared.makeRequest(request)
+	}
+	
+	final class func getRandomImages(size: CGSize, scale: CGFloat, count: Int = 30) async throws -> [UpsplashImage] {
+		let params: [String : String] = ["orientation" : "portrait",
+										 "topics" : "bo8jQKTaE0Y",
+										 "w" : "\(size.width)",
+										 "h" : "\(size.height)",
+										 "dpr" : "\(Int(scale))",
+										 "count" : "\(count)" ]
+		let request = UpsplashRequest(path: "/photos/random", urlParams: params)
+	
 		return try await UpsplashSessionManager.shared.makeRequest(request)
 	}
 	

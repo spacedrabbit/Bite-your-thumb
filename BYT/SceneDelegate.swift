@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -24,6 +25,31 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		let nav = FoaasNavigationController(rootViewController: root)
 		self.window?.rootViewController = nav
 		self.window?.makeKeyAndVisible()
+		
+		Task { await downloadBackgroundImages() }
+	}
+	
+	private func downloadBackgroundImages() async {
+		guard let screen = window?.screen else { return }
+		
+		let optImages = try? await UpsplashService.getRandomImages(size: screen.bounds.size, scale: screen.scale, count: 4)
+		
+		let urls = optImages?.map({ $0.urls.regular }) ?? []
+		ImagePrefetcher(urls: urls, options: [.diskCacheExpiration(.days(7))]) { _, _, completedResources in
+			self.checkCacheStatus(completedResources.map({ $0.cacheKey }))
+		}.start()
+		
+		
+	}
+	
+	private func checkCacheStatus(_ cacheKeys: [String]) {
+		for key in cacheKeys {
+			if ImageCache.default.diskStorage.isCached(forKey: key) {
+				print("\nKey: \(key)")
+				print(ImageCache.default.imageCachedType(forKey: key))
+			}
+			
+		}
 	}
 
 }

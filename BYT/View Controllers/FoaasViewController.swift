@@ -12,8 +12,8 @@ import Kingfisher
 
 class FoaasViewController: UICollectionViewController {
 
-	private let backgroundImage: UIImageView = {
-		let imageView = UIImageView(frame: .zero)
+	private let backgroundImage: ImageView = {
+		let imageView = ImageView(frame: .zero)
 		imageView.contentMode = .scaleAspectFill
 		return imageView
 	}()
@@ -92,7 +92,7 @@ class FoaasViewController: UICollectionViewController {
 				let result = (try await foaas, try await image)
 				
 				self.foaas = result.0
-				self.backgroundImage.kf.setImage(with: result.1.urls.regular,
+				self.backgroundImage.setImage(with: result.1.urls.regular,
 												 placeholder: UIImage(blurHash: result.1.blurHash, size: screen.bounds.size))
 				
 				self.generateItems()
