@@ -8,6 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		1408CAA11E494B1100AFC1AA /* FoaasColorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1408CAA01E494B1100AFC1AA /* FoaasColorView.swift */; };
+		141416522B7A8F47002F593E /* UpsplashImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141416512B7A8F47002F593E /* UpsplashImage.swift */; };
+		141416552B7A8FBA002F593E /* ImageDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141416542B7A8FBA002F593E /* ImageDataManager.swift */; };
+		141416572B7A9071002F593E /* UpsplashRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141416562B7A9071002F593E /* UpsplashRequest.swift */; };
+		1414165A2B7A90B3002F593E /* FoaasRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141416592B7A90B3002F593E /* FoaasRequest.swift */; };
+		1414165C2B7A90FA002F593E /* FoaasSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1414165B2B7A90FA002F593E /* FoaasSession.swift */; };
+		1414165F2B7A9135002F593E /* UpsplashSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1414165E2B7A9135002F593E /* UpsplashSession.swift */; };
 		1425E3842B74512F0024E168 /* LouisSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 1425E3832B74512F0024E168 /* LouisSDK */; };
 		1430C7521E457393002D904A /* Profanity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1430C7511E457393002D904A /* Profanity.swift */; };
 		1498A2FD1E3D7A4F003A3E5C /* FoaasColorPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1498A2FC1E3D7A4F003A3E5C /* FoaasColorPickerView.swift */; };
@@ -70,6 +76,12 @@
 
 /* Begin PBXFileReference section */
 		1408CAA01E494B1100AFC1AA /* FoaasColorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoaasColorView.swift; path = Views/FoaasColorView.swift; sourceTree = "<group>"; };
+		141416512B7A8F47002F593E /* UpsplashImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UpsplashImage.swift; path = Models/UpsplashImage.swift; sourceTree = "<group>"; };
+		141416542B7A8FBA002F593E /* ImageDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ImageDataManager.swift; path = Managers/ImageDataManager.swift; sourceTree = "<group>"; };
+		141416562B7A9071002F593E /* UpsplashRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpsplashRequest.swift; sourceTree = "<group>"; };
+		141416592B7A90B3002F593E /* FoaasRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoaasRequest.swift; sourceTree = "<group>"; };
+		1414165B2B7A90FA002F593E /* FoaasSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoaasSession.swift; sourceTree = "<group>"; };
+		1414165E2B7A9135002F593E /* UpsplashSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpsplashSession.swift; sourceTree = "<group>"; };
 		1430C7511E457393002D904A /* Profanity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Profanity.swift; path = Models/Profanity.swift; sourceTree = "<group>"; };
 		1498A2FC1E3D7A4F003A3E5C /* FoaasColorPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.swift; name = FoaasColorPickerView.swift; path = Views/FoaasColorPickerView.swift; sourceTree = "<group>"; tabWidth = 4; };
 		1498A2FF1E3E55E4003A3E5C /* Version.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Version.swift; path = Models/Version.swift; sourceTree = "<group>"; };
@@ -87,7 +99,7 @@
 		14CFEC101E34363300BD46CF /* FoaasField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoaasField.swift; path = Models/FoaasField.swift; sourceTree = "<group>"; };
 		14CFEC111E34363300BD46CF /* FoaasOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoaasOperation.swift; path = Models/FoaasOperation.swift; sourceTree = "<group>"; };
 		14CFEC121E34363300BD46CF /* FoaasTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoaasTemplate.swift; path = Models/FoaasTemplate.swift; sourceTree = "<group>"; };
-		14CFEC171E34394D00BD46CF /* FoaasService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoaasService.swift; path = Managers/FoaasService.swift; sourceTree = "<group>"; };
+		14CFEC171E34394D00BD46CF /* FoaasService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoaasService.swift; sourceTree = "<group>"; };
 		14CFEC181E34394D00BD46CF /* FoaasDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoaasDataManager.swift; path = Managers/FoaasDataManager.swift; sourceTree = "<group>"; };
 		14CFEC3F1E3705AC00BD46CF /* FoaasViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.swift; name = FoaasViewController.swift; path = "View Controllers/FoaasViewController.swift"; sourceTree = "<group>"; tabWidth = 4; };
 		14CFEC411E3705E800BD46CF /* FoaasView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoaasView.swift; path = Views/FoaasView.swift; sourceTree = "<group>"; };
@@ -98,7 +110,7 @@
 		14CFEC4B1E3709A700BD46CF /* FoaasNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoaasNavigationController.swift; path = "View Controllers/FoaasNavigationController.swift"; sourceTree = "<group>"; };
 		14CFEC4D1E37E86700BD46CF /* FoaasPreviewView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoaasPreviewView.swift; path = Views/FoaasPreviewView.swift; sourceTree = "<group>"; };
 		14E09D932B783F9200E36A45 /* BlurHashDecode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BlurHashDecode.swift; path = Utility/BlurHashDecode.swift; sourceTree = "<group>"; };
-		14E09D952B78400D00E36A45 /* UpsplashService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UpsplashService.swift; path = Managers/UpsplashService.swift; sourceTree = "<group>"; };
+		14E09D952B78400D00E36A45 /* UpsplashService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpsplashService.swift; sourceTree = "<group>"; };
 		14E09D982B78435500E36A45 /* LouisSDK */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = LouisSDK; path = ../../Swift/LouisSDK/LouisSDK; sourceTree = "<group>"; };
 		14E09D992B78523500E36A45 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		14E09D9E2B79951700E36A45 /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ImageView.swift; path = Utility/ImageView.swift; sourceTree = "<group>"; };
@@ -144,6 +156,43 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		141416532B7A8F7D002F593E /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				141416602B7A91A8002F593E /* Service */,
+				141416582B7A9076002F593E /* Requests */,
+				1414165D2B7A90FF002F593E /* Sessions */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		141416582B7A9076002F593E /* Requests */ = {
+			isa = PBXGroup;
+			children = (
+				141416562B7A9071002F593E /* UpsplashRequest.swift */,
+				141416592B7A90B3002F593E /* FoaasRequest.swift */,
+			);
+			path = Requests;
+			sourceTree = "<group>";
+		};
+		1414165D2B7A90FF002F593E /* Sessions */ = {
+			isa = PBXGroup;
+			children = (
+				1414165B2B7A90FA002F593E /* FoaasSession.swift */,
+				1414165E2B7A9135002F593E /* UpsplashSession.swift */,
+			);
+			path = Sessions;
+			sourceTree = "<group>";
+		};
+		141416602B7A91A8002F593E /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				14CFEC171E34394D00BD46CF /* FoaasService.swift */,
+				14E09D952B78400D00E36A45 /* UpsplashService.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
 		14CFEBDD1E3430C600BD46CF = {
 			isa = PBXGroup;
 			children = (
@@ -166,6 +215,7 @@
 			children = (
 				14CFEBFC1E3431F700BD46CF /* AppDelegate.swift */,
 				14E09D992B78523500E36A45 /* SceneDelegate.swift */,
+				141416532B7A8F7D002F593E /* Network */,
 				14CFEC041E3432C700BD46CF /* Managers */,
 				14CFEC031E3432BF00BD46CF /* Models */,
 				14CFEC061E3432E300BD46CF /* Utility */,
@@ -216,6 +266,7 @@
 				14CFEC111E34363300BD46CF /* FoaasOperation.swift */,
 				14CFEC121E34363300BD46CF /* FoaasTemplate.swift */,
 				1430C7511E457393002D904A /* Profanity.swift */,
+				141416512B7A8F47002F593E /* UpsplashImage.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -223,13 +274,12 @@
 		14CFEC041E3432C700BD46CF /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				141416542B7A8FBA002F593E /* ImageDataManager.swift */,
 				1498A3021E3E55F0003A3E5C /* ColorManager.swift */,
-				14CFEC171E34394D00BD46CF /* FoaasService.swift */,
 				4786344C1E3E513600287661 /* FoaasFontManager.swift */,
 				14CFEC181E34394D00BD46CF /* FoaasDataManager.swift */,
 				DE6658FA1E3E8E6300513850 /* VersionManager.swift */,
 				812EAE861E42312D003CAE18 /* Extension + LanguageFilterManager.swift */,
-				14E09D952B78400D00E36A45 /* UpsplashService.swift */,
 			);
 			name = Managers;
 			sourceTree = "<group>";
@@ -393,6 +443,7 @@
 				14CFEC151E34363300BD46CF /* FoaasOperation.swift in Sources */,
 				14CFEC421E3705E800BD46CF /* FoaasView.swift in Sources */,
 				14CFEC461E37083400BD46CF /* FoaasOperationTableViewCell.swift in Sources */,
+				1414165C2B7A90FA002F593E /* FoaasSession.swift in Sources */,
 				14CFEC161E34363300BD46CF /* FoaasTemplate.swift in Sources */,
 				81DBD7651E4B390200BCF0CC /* FoaasAboutViewController.swift in Sources */,
 				14E09D9F2B79951700E36A45 /* ImageView.swift in Sources */,
@@ -405,12 +456,17 @@
 				81661B471E49F6C10044756A /* FoaasMember.swift in Sources */,
 				DE6658FB1E3E8E6300513850 /* VersionManager.swift in Sources */,
 				14E09D942B783F9200E36A45 /* BlurHashDecode.swift in Sources */,
+				1414165A2B7A90B3002F593E /* FoaasRequest.swift in Sources */,
 				14CFEC131E34363300BD46CF /* Foaas.swift in Sources */,
 				14CFEC141E34363300BD46CF /* FoaasField.swift in Sources */,
+				141416572B7A9071002F593E /* UpsplashRequest.swift in Sources */,
 				14CFEC0E1E3435BE00BD46CF /* FoaasBuilder.swift in Sources */,
+				141416552B7A8FBA002F593E /* ImageDataManager.swift in Sources */,
 				1430C7521E457393002D904A /* Profanity.swift in Sources */,
 				14CFEC4C1E3709A700BD46CF /* FoaasNavigationController.swift in Sources */,
 				4786344D1E3E513600287661 /* FoaasFontManager.swift in Sources */,
+				1414165F2B7A9135002F593E /* UpsplashSession.swift in Sources */,
+				141416522B7A8F47002F593E /* UpsplashImage.swift in Sources */,
 				14CFEC0A1E34346F00BD46CF /* FoaasProtocols.swift in Sources */,
 				DE6658F91E3E884800513850 /* ColorScheme.swift in Sources */,
 				14CFEC441E3707C600BD46CF /* FoaasOperationsTableViewController.swift in Sources */,

@@ -34,6 +34,11 @@ class FoaasViewController: UICollectionViewController {
 		case foaas(Foaas)
 	}
 	
+	private var activeTask: Task<Void, Never>? {
+		willSet {
+			activeTask?.cancel()
+		}
+	}
 	private var cancellables: Set<AnyCancellable> = []
 	
 	// MARK: - Constructors
