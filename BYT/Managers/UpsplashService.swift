@@ -31,10 +31,16 @@ struct UpsplashImage: Codable, Mappable {
 		let thumb: URL
 	}
 	
-	// According the upsplash api, this url must be used to download images in order to properly credit the author.
-	// However, this requires an api request and since I'm limitied to 50/hr, I'm not going to do that
-	// for a pet project. I'm leaving this note here for the future should I decide to submit this to the
-	// app store, I will need to switch to using this API for caching images to disk
+	// ⚠️ Production Consideration:
+	// 	https://help.unsplash.com/en/articles/2511258-guideline-triggering-a-download
+	//
+	//	According the upsplash api, the downloadLocation url must be used to download images in order
+	//  to properly credit the author. However, this requires an api request and since I'm limitied
+	// 	to 50/hr, I'm not going to do that for a pet project. I'm leaving this note here for the future
+	// 	should I decide to submit this to the app store, I will need to switch to using this API for
+	//  caching images to disk
+	// 	Alternatively, it sounds like I could defer this operation until/if a user shares, screenshots,
+	//  or otherwise saves the foaas they create. 
 	struct LinksBundle: Codable, Mappable {
 		let downloadLocation: URL
 	}
