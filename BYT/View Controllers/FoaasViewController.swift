@@ -86,14 +86,14 @@ class FoaasViewController: UICollectionViewController {
 		// The answer: it isn't. In practice, I will see the blurhash image loaded before the full render
 		Task {
 			async let foaas = FoaasService.getFoassSDK()
-			async let image = UpsplashService.getRandomImage(size: screen.bounds.size, scale: screen.scale)
+			async let image = ImageDataManager.getRandomImage()
 			
 			do {
 				let result = (try await foaas, try await image)
 				
 				self.foaas = result.0
-				self.backgroundImage.setImage(with: result.1.urls.regular,
-												 placeholder: UIImage(blurHash: result.1.blurHash, size: screen.bounds.size))
+				self.backgroundImage.setImage(with: result.1?.urls.regular,
+												 placeholder: UIImage(blurHash: result.1?.blurHash ?? "", size: screen.bounds.size))
 				
 				self.generateItems()
 				self.collectionView.reloadData()
