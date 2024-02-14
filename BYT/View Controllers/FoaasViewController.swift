@@ -10,8 +10,9 @@ import UIKit
 import Combine
 import Kingfisher
 
-class FoaasLandingCollectionViewController: UICollectionViewController {
-
+class FoaasLandingCollectionViewController: UICollectionViewController, FoaasViewController {
+	var navigationItems: [NavigationItem] = [.add]
+	
 	private let backgroundImage: ImageView = {
 		let imageView = ImageView(frame: .zero)
 		imageView.contentMode = .scaleAspectFill
@@ -46,14 +47,13 @@ class FoaasLandingCollectionViewController: UICollectionViewController {
 	override init(collectionViewLayout: UICollectionViewLayout = UICollectionViewFlowLayout()) {
 		super.init(collectionViewLayout: collectionViewLayout)
 		
-//		self.collectionView.backgroundColor = .green
+		self.collectionView.backgroundColor = .green
 		self.collectionView.backgroundView = backgroundImage
 		self.collectionView.refreshControl = refreshControl
 
 		self.collectionView.collectionViewLayout = generateLayout()
 		self.collectionView.register(FoaasCollectionCell.self, forCellWithReuseIdentifier: Identifiers.foaasCell)
 		
-		configureConstraints()
 		registerForNotifications()
 		reload()
 	}
@@ -66,14 +66,15 @@ class FoaasLandingCollectionViewController: UICollectionViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		
+	}
+	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
-	}
-	
-	private func configureConstraints() {
-
 	}
 	
 	// MARK: - Reload

@@ -8,99 +8,61 @@
 
 import UIKit
 
-struct FoaasNavImages {
-	static let addButton: UIImage = UIImage(named: "add_button_grayscale")!
-	static let backButton: UIImage = UIImage(named: "back_button_grayscale")!
-	static let closeButton: UIImage = UIImage(named: "close_button_grayscale")!
-	static let doneButton: UIImage = UIImage(named: "done_button_grayscale")!
-}
-
-enum FoaasNavType {
-	case add, back, close, done, none
-}
-
-protocol FoaasNavigationActionDelegate {
-	func leftAction()
-	func rightAction()
-}
+// MARK: - FoaasViewController Protocol
 
 protocol FoaasViewController: UIViewController {
 	
-	var navBar: FoassBottomBar { get }
+	var foaasNavigationBar: FoassBottomBar { get }
+	
+	var navigationItems: [NavigationItem] { get set }
 	
 }
 
-extension UIViewController: FoaasViewController {
+extension FoaasViewController {
 	
-	var navBar: FoassBottomBar {
+	var foaasNavigationBar: FoassBottomBar {
 		return (self.navigationController as? FoaasNavigationController)?.navbar ?? FoassBottomBar()
 	}
-	
+
 }
 
-// square.and.arrow.up.circle.fill
-
-struct NavigationButton {
-	
-	static let add: UIButton = {
-		let button = UIButton()
-		button.setImage(UIImage(systemName: "plus.circle.fill")?
-			.resized(toWidth: 32.0)?.withTintColor(.systemBlue), for: .normal)
-		button.contentMode = .scaleAspectFit
-		button.imageView?.contentMode = .scaleAspectFit
-		return button
-	}()
-	
-	static let back: UIButton = {
-		let button = UIButton()
-		button.setImage(UIImage(systemName: "arrow.backward.circle.fill"), for: .normal)
-		button.contentMode = .scaleAspectFit
-		button.imageView?.contentMode = .scaleAspectFit
-		return button
-	}()
-	
-	static let share: UIButton = {
-		let button = UIButton()
-		button.setImage(UIImage(systemName: "square.and.arrow.up.circle.fill"), for: .normal)
-		button.contentMode = .scaleAspectFit
-		button.imageView?.contentMode = .scaleAspectFit
-		return button
-	}()
-	
-	static let profanity: UIButton = {
-		let button = UIButton()
-		button.setImage(UIImage(systemName: "exclamationmark.bubble.circle.fill"), for: .normal)
-		button.contentMode = .scaleAspectFit
-		button.imageView?.contentMode = .scaleAspectFit
-		return button
-	}()
-	
-}
+// MARK: - FoaasNavigationController
 
 class FoaasNavigationController: UINavigationController, UINavigationControllerDelegate {
-	let navbar: FoassBottomBar = FoassBottomBar(frame: .zero)
 	
-	// MARK: - View Lifecycle
-	override func viewDidLoad() {
-		super.viewDidLoad()
+	fileprivate let navbar: FoassBottomBar = FoassBottomBar(frame: .zero)
+	private var navButtons: [NavigationButton] = []
+	
+	override init(rootViewController: UIViewController) {
+		super.init(rootViewController: rootViewController)
 		
 		self.view.addSubview(navbar)
 		self.delegate = self
+		makeButtons()
+		updateNavigationButtons(using: rootViewController, animated: false)
+	}
+	
+	required init?(coder aDecoder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
+	}
+	
+	// MARK: - View Lifecycle
+	
+	override func viewDidLoad() {
+		super.viewDidLoad()
+		
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		
 		self.setNavigationBarHidden(true, animated: false)
 		positionNavbar()
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
-		
 		positionNavbar()
 	}
-	
 	
 	// MARK: - Setup
 	
@@ -113,43 +75,69 @@ class FoaasNavigationController: UINavigationController, UINavigationControllerD
 				navbar.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
 				navbar.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor),
 			])
-			
-			
-//			navbar.frame = CGRect(x: (self.view.w - navbar.w) / 2.0, y: self.view.h - 100.0, width: 200.0, height: 60.0)
 		}
+	}
+	
+	private func makeButtons() {
+		navButtons = NavigationItem.allCases.map({ item in
+			let button = NavigationButton(navigationItem: item)
+			button.contentMode = .scaleAspectFit
+			button.addTarget(self, action: #selector(handleButtonTapped(_:)), for: .touchUpInside)
+			return button
+		})
+	}
+	
+	func updateNavigationButtons(using to: UIViewController, animated: Bool = true) {
+		guard
+			let foaasVC = to as? FoaasViewController
+		else { return }
 		
+		let buttons = navButtons.filter({ foaasVC.navigationItems.contains($0.navigationItem) })
+		buttons.forEach({
+			navbar.addButton($0)
+		})
+		
+		// If there is more than 1 on stack, we must have a back button
+		// Otherwise, the view controller will decide what to use
 	}
 	
-	private func configureConstraints() {
+	@objc
+	private func handleButtonTapped(_ sender: NavigationButton) {
+		switch sender.navigationItem {
+			
+		case .add:
+			let dtvc = FoaasOperationsTableViewController()
+			self.pushViewController(dtvc, animated: true)
+			
+		case .close:
+			print("Close")
+			
+		case .done:
+			print("Done")
+			
+		case .profanity:
+			print("Profanity Toggle")
+			
+		case .back:
+			print("Back")
+			
+		case .share:
+			print("Share")
+			
+		}
 	}
-	
-	/// Called just before viewWillAppear in order to place the buttons over all other views
-	private func bringFloatingButtonsToTop() {
-
-	}
-	
-	
-	// MARK: - Actions
-	@objc private func runLeftAction() {
-
-	}
-	
-	@objc private func runRightAction() {
-	}
-	
 	
 	// MARK: - Navigation Changes
 	
 	func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
 		positionNavbar()
-		// TODO: the current implementation works for positioning, but the buttons need actions, methods to update images & actions and shadows
+		updateNavigationButtons(using: viewController)
 	}
 	
 	
-	// MARK: Lazy Inits
-	internal lazy var leftFloatingButton: UIButton = UIButton()
-	internal lazy var rightFloatingButton: UIButton =  UIButton()
 }
+
+// MARK: - FoassBottomBar
 
 final class FoassBottomBar: UIView {
 	private let buttonSize: CGFloat = 48.0
@@ -179,21 +167,14 @@ final class FoassBottomBar: UIView {
 //		effectsView.contentView.addSubview(stackview)
 		self.backgroundColor = .red
 		self.addSubview(stackview)
-		let add = NavigationButton.add
-		
 		self.clipsToBounds = true
-		stackview.addArrangedSubview(add)
-		add.addTarget(self, action: #selector(handleAddButton), for: .touchUpInside)
-		
+
 		stackview.translatesAutoresizingMaskIntoConstraints = false
 		[
 			self.widthAnchor.constraint(greaterThanOrEqualToConstant: 60.0),
 			self.widthAnchor.constraint(equalTo: stackview.widthAnchor),
 			self.topAnchor.constraint(equalTo: stackview.topAnchor, constant: -8.0),
 			self.bottomAnchor.constraint(equalTo: stackview.bottomAnchor,constant: 8.0),
-			
-			add.widthAnchor.constraint(equalToConstant: buttonSize),
-			add.heightAnchor.constraint(equalToConstant: buttonSize),
 		].activate()
 	}
 	
@@ -203,14 +184,7 @@ final class FoassBottomBar: UIView {
 	
 	// Adjusting nav items
 	
-	@objc private func handleAddButton() {
-		let new = UIButton()
-		new.backgroundColor = .orange
-		
-		addButton(new)
-	}
-	
-	private func addButton(_ button: UIButton) {
+	fileprivate func addButton(_ button: UIButton) {
 		button.translatesAutoresizingMaskIntoConstraints = false
 		NSLayoutConstraint.activate([
 			button.widthAnchor.constraint(equalToConstant: buttonSize),
@@ -225,11 +199,12 @@ final class FoassBottomBar: UIView {
 		}
 	}
 	
-	private func removeButton(_ button: UIButton) {
-		UIView.animate(withDuration: 0.3) {
-			self.stackview.removeArrangedSubview(button)
-			button.removeFromSuperview()
+	fileprivate func removeButton(_ button: UIButton) {
+		UIView.animate(withDuration: 0.3, animations: {
+			button.alpha = 0.0
 			self.layoutIfNeeded()
+		}) { _ in
+			self.stackview.removeArrangedSubview(button)
 		}
 	}
 	
@@ -241,5 +216,76 @@ final class FoassBottomBar: UIView {
 		super.layoutSubviews()
 		
 		self.layer.cornerRadius = self.h / 2.0
+	}
+}
+
+fileprivate class NavigationButton: UIButton {
+	
+	let navigationItem: NavigationItem
+	
+	init(navigationItem: NavigationItem) {
+		self.navigationItem = navigationItem
+		super.init(frame: .zero)
+		
+		self.setImage(navigationItem.image, for: .normal)
+	}
+	
+	required init?(coder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
+	}
+	
+}
+
+enum NavigationItem: CaseIterable, Equatable {
+	case add, close, done, profanity, back, share
+	
+	var image: UIImage? {
+		switch self {
+		case .add: return NavigationItemImage.add
+		case .back: return NavigationItemImage.back
+		case .close: return NavigationItemImage.close
+		case .profanity: return NavigationItemImage.profanity
+		case .share: return NavigationItemImage.share
+		case .done: return NavigationItemImage.done
+		}
+	}
+	
+	var displayPriority: Int {
+		switch self {
+		case .back: return 0
+		case .share: return 1
+		case .add: return 2
+		case .profanity: return 3
+		case .close: return 999
+		case .done: return 999
+		}
+	}
+	
+	struct NavigationItemImage {
+		
+		static let add = UIImage(systemName: "plus.circle.fill")?
+			.resized(toWidth: 32.0)?
+			.withTintColor(.systemBlue)
+		
+		static let back = UIImage(systemName: "arrow.backward.circle.fill")?
+			.resized(toWidth: 32.0)?
+			.withTintColor(.systemBlue)
+		
+		static let close = UIImage(systemName: "xmark.circle.fill")?
+			.resized(toWidth: 32.0)?
+			.withTintColor(.systemBlue)
+		
+		static let done = UIImage(named: "checkmark.circle.fill")?
+			.resized(toWidth: 32.0)?
+			.withTintColor(.systemBlue)
+		
+		static let share = UIImage(systemName: "square.and.arrow.up.circle.fill")?
+			.resized(toWidth: 32.0)?
+			.withTintColor(.systemBlue)
+		
+		static let profanity = UIImage(systemName: "exclamationmark.bubble.circle.fill")?
+			.resized(toWidth: 32.0)?
+			.withTintColor(.systemBlue)
+		
 	}
 }
