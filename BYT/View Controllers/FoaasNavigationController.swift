@@ -119,7 +119,7 @@ class FoaasNavigationController: UINavigationController, UINavigationControllerD
 			print("Profanity Toggle")
 			
 		case .back:
-			print("Back")
+			self.popViewController(animated: true)
 			
 		case .share:
 			print("Share")
@@ -168,11 +168,20 @@ final class FoassBottomBar: UIView {
 		self.backgroundColor = .red
 		self.addSubview(stackview)
 		self.clipsToBounds = true
-
+		
+		self.translatesAutoresizingMaskIntoConstraints = false
 		stackview.translatesAutoresizingMaskIntoConstraints = false
+		
+		let widthConstraintMin = self.widthAnchor.constraint(greaterThanOrEqualTo: self.heightAnchor)
+		widthConstraintMin.priority = UILayoutPriority(rawValue: 999.0)
+		
+		let widthConstraintIdeal = self.widthAnchor.constraint(equalTo: stackview.widthAnchor)
+		widthConstraintIdeal.priority = .defaultHigh
+		
 		[
-			self.widthAnchor.constraint(greaterThanOrEqualToConstant: 60.0),
-			self.widthAnchor.constraint(equalTo: stackview.widthAnchor),
+			widthConstraintMin,
+			widthConstraintIdeal,
+			stackview.centerXAnchor.constraint(equalTo: self.centerXAnchor),
 			self.topAnchor.constraint(equalTo: stackview.topAnchor, constant: -8.0),
 			self.bottomAnchor.constraint(equalTo: stackview.bottomAnchor,constant: 8.0),
 		].activate()
