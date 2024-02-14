@@ -8,7 +8,9 @@
 
 import UIKit
 
-class FoaasOperationsTableViewController: UITableViewController {
+class FoaasOperationsTableViewController: UITableViewController, FoaasViewController {
+	
+	var navigationItems: [NavigationItem] = [.done]
     
     let operations = FoaasDataManager.shared.operations
     let cellIdentifier = "FoaasOperationCellIdentifier"

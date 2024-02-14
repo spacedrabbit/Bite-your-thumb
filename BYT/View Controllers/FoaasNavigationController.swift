@@ -92,13 +92,13 @@ class FoaasNavigationController: UINavigationController, UINavigationControllerD
 			let foaasVC = to as? FoaasViewController
 		else { return }
 		
-		let buttons = navButtons.filter({ foaasVC.navigationItems.contains($0.navigationItem) })
-		buttons.forEach({
-			navbar.addButton($0)
-		})
+		var modifiedItems = foaasVC.navigationItems
+		if !modifiedItems.contains(.back) && foaasVC !== self.viewControllers.first {
+			modifiedItems.append(.back)
+		}
 		
-		// If there is more than 1 on stack, we must have a back button
-		// Otherwise, the view controller will decide what to use
+		let buttons = navButtons.filter({ modifiedItems.contains($0.navigationItem) })
+		navbar.updateButtons(buttons)
 	}
 	
 	@objc
@@ -140,6 +140,8 @@ class FoaasNavigationController: UINavigationController, UINavigationControllerD
 // MARK: - FoassBottomBar
 
 final class FoassBottomBar: UIView {
+	private typealias ButtonBundle = (button: NavigationButton, index: Int)
+	
 	private let buttonSize: CGFloat = 48.0
 	
 	private let stackview: UIStackView = {
@@ -151,6 +153,10 @@ final class FoassBottomBar: UIView {
 		return stackview
 	}()
 	
+	private var navigationButtons: [NavigationButton] {
+		return stackview.arrangedSubviews.compactMap({ $0 as? NavigationButton })
+	}
+
 //	private let effectsView: UIVisualEffectView = {
 //		let effect = UIBlurEffect(style: .extraLight)
 //
@@ -193,19 +199,50 @@ final class FoassBottomBar: UIView {
 	
 	// Adjusting nav items
 	
-	fileprivate func addButton(_ button: UIButton) {
-		button.translatesAutoresizingMaskIntoConstraints = false
-		NSLayoutConstraint.activate([
-			button.widthAnchor.constraint(equalToConstant: buttonSize),
-			button.heightAnchor.constraint(equalToConstant: buttonSize)
-		])
+	fileprivate func updateButtons(_ buttons: [NavigationButton]) {
+		// if we already have the button we need, ignore for now
+		var remaining = buttons.filter({ !navigationButtons.contains($0) })
 		
-		button.alpha = 0.0
-		self.stackview.addArrangedSubview(button)
-		UIView.animate(withDuration: 0.3) {
-			button.alpha = 1.0
+		while let newBttn = remaining.popLast() {
+			if navigationButtons.isEmpty {
+				addButton(newBttn)
+				continue
+			}
+			
+			for (idx, navBttn) in navigationButtons.enumerated() {
+				if newBttn.navigationItem.displayPriority <= navBttn.navigationItem.displayPriority {
+					addButton(newBttn, at: idx)
+					continue
+				} else if idx == remaining.count - 1 {
+					addButton(newBttn, at: idx)
+				}
+			}
+		}
+	}
+	
+	private func displayButtons(_ show: [ButtonBundle], hide: [ButtonBundle], animated: Bool = true) {
+		
+	}
+	
+	fileprivate func addButton(_ button: NavigationButton, at index: Int = 0, animated: Bool = true) {
+			button.translatesAutoresizingMaskIntoConstraints = false
+			NSLayoutConstraint.activate([
+				button.widthAnchor.constraint(equalToConstant: buttonSize),
+				button.heightAnchor.constraint(equalToConstant: buttonSize)
+			])
+		
+		if animated {
+			button.alpha = 0.0
+			stackview.insertArrangedSubview(button, at: index)
+			UIView.animate(withDuration: 0.3) {
+				button.alpha = 1.0
+				self.layoutIfNeeded()
+			}
+		} else {
+			stackview.insertArrangedSubview(button, at: index)
 			self.layoutIfNeeded()
 		}
+		
 	}
 	
 	fileprivate func removeButton(_ button: UIButton) {
