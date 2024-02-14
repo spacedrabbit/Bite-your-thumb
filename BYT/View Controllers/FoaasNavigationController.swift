@@ -199,25 +199,45 @@ final class FoassBottomBar: UIView {
 	
 	// Adjusting nav items
 	
-	fileprivate func updateButtons(_ buttons: [NavigationButton]) {
-		// if we already have the button we need, ignore for now
-		var remaining = buttons.filter({ !navigationButtons.contains($0) })
+	fileprivate func updateButtons(_ buttons: [NavigationButton], animated: Bool = true) {
+		var toShow = Array(Set(navigationButtons).intersection(buttons))
+		var toHide = Set(navigationButtons).subtracting(buttons)
+		var noChange = navigationButtons.filter({ buttons.contains($0) })
 		
-		while let newBttn = remaining.popLast() {
-			if navigationButtons.isEmpty {
-				addButton(newBttn)
-				continue
-			}
+		toShow.forEach({ button in
+			button.alpha = animated ? 0.0 : 1.0
+			button.translatesAutoresizingMaskIntoConstraints = false
+			NSLayoutConstraint.activate([
+				button.widthAnchor.constraint(equalToConstant: buttonSize),
+				button.heightAnchor.constraint(equalToConstant: buttonSize)
+			])
+		})
+		
+		let newButtons = (toShow + noChange).sorted(by: { $0.navigationItem.displayPriority < $1.navigationItem.displayPriority })
+		UIView.animate(withDuration: 0.3, animations: {
+			toShow.forEach({ showingButton in
+				
+			})
 			
-			for (idx, navBttn) in navigationButtons.enumerated() {
-				if newBttn.navigationItem.displayPriority <= navBttn.navigationItem.displayPriority {
-					addButton(newBttn, at: idx)
-					continue
-				} else if idx == remaining.count - 1 {
-					addButton(newBttn, at: idx)
-				}
-			}
+		}) { _ in
+			
 		}
+		
+//		while let newBttn = remaining.popLast() {
+//			if navigationButtons.isEmpty {
+//				addButton(newBttn)
+//				continue
+//			}
+//
+//			for (idx, navBttn) in navigationButtons.enumerated() {
+//				if newBttn.navigationItem.displayPriority <= navBttn.navigationItem.displayPriority {
+//					addButton(newBttn, at: idx)
+//					continue
+//				} else if idx == remaining.count - 1 {
+//					addButton(newBttn, at: idx)
+//				}
+//			}
+//		}
 	}
 	
 	private func displayButtons(_ show: [ButtonBundle], hide: [ButtonBundle], animated: Bool = true) {
