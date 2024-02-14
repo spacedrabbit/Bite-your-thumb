@@ -44,7 +44,8 @@ struct NavigationButton {
 	
 	static let add: UIButton = {
 		let button = UIButton()
-		button.setImage(UIImage(systemName: "plus.circle.fill"), for: .normal)
+		button.setImage(UIImage(systemName: "plus.circle.fill")?
+			.resized(toWidth: 32.0)?.withTintColor(.systemBlue), for: .normal)
 		button.contentMode = .scaleAspectFit
 		button.imageView?.contentMode = .scaleAspectFit
 		return button

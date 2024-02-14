@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		14040F1F2B7D537300B31C02 /* UIImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14040F1E2B7D537300B31C02 /* UIImage+Extensions.swift */; };
+		14040F212B7D566900B31C02 /* LRUCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14040F202B7D566900B31C02 /* LRUCache.swift */; };
 		1408CAA11E494B1100AFC1AA /* FoaasColorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1408CAA01E494B1100AFC1AA /* FoaasColorView.swift */; };
 		141416522B7A8F47002F593E /* UpsplashImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141416512B7A8F47002F593E /* UpsplashImage.swift */; };
 		141416552B7A8FBA002F593E /* ImageDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141416542B7A8FBA002F593E /* ImageDataManager.swift */; };
@@ -75,6 +77,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		14040F1E2B7D537300B31C02 /* UIImage+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Extensions.swift"; sourceTree = "<group>"; };
+		14040F202B7D566900B31C02 /* LRUCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LRUCache.swift; path = Utility/LRUCache.swift; sourceTree = "<group>"; };
 		1408CAA01E494B1100AFC1AA /* FoaasColorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoaasColorView.swift; path = Views/FoaasColorView.swift; sourceTree = "<group>"; };
 		141416512B7A8F47002F593E /* UpsplashImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UpsplashImage.swift; path = Models/UpsplashImage.swift; sourceTree = "<group>"; };
 		141416542B7A8FBA002F593E /* ImageDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ImageDataManager.swift; path = Managers/ImageDataManager.swift; sourceTree = "<group>"; };
@@ -214,6 +218,7 @@
 			isa = PBXGroup;
 			children = (
 				14CFEBFC1E3431F700BD46CF /* AppDelegate.swift */,
+				14040F1E2B7D537300B31C02 /* UIImage+Extensions.swift */,
 				14E09D992B78523500E36A45 /* SceneDelegate.swift */,
 				141416532B7A8F7D002F593E /* Network */,
 				14CFEC041E3432C700BD46CF /* Managers */,
@@ -303,6 +308,7 @@
 				14E09D9E2B79951700E36A45 /* ImageView.swift */,
 				14CFEC091E34346F00BD46CF /* FoaasProtocols.swift */,
 				14E09D932B783F9200E36A45 /* BlurHashDecode.swift */,
+				14040F202B7D566900B31C02 /* LRUCache.swift */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -443,6 +449,7 @@
 				14CFEC151E34363300BD46CF /* FoaasOperation.swift in Sources */,
 				14CFEC421E3705E800BD46CF /* FoaasView.swift in Sources */,
 				14CFEC461E37083400BD46CF /* FoaasOperationTableViewCell.swift in Sources */,
+				14040F1F2B7D537300B31C02 /* UIImage+Extensions.swift in Sources */,
 				1414165C2B7A90FA002F593E /* FoaasSession.swift in Sources */,
 				14CFEC161E34363300BD46CF /* FoaasTemplate.swift in Sources */,
 				81DBD7651E4B390200BCF0CC /* FoaasAboutViewController.swift in Sources */,
@@ -462,6 +469,7 @@
 				141416572B7A9071002F593E /* UpsplashRequest.swift in Sources */,
 				14CFEC0E1E3435BE00BD46CF /* FoaasBuilder.swift in Sources */,
 				141416552B7A8FBA002F593E /* ImageDataManager.swift in Sources */,
+				14040F212B7D566900B31C02 /* LRUCache.swift in Sources */,
 				1430C7521E457393002D904A /* Profanity.swift in Sources */,
 				14CFEC4C1E3709A700BD46CF /* FoaasNavigationController.swift in Sources */,
 				4786344D1E3E513600287661 /* FoaasFontManager.swift in Sources */,
