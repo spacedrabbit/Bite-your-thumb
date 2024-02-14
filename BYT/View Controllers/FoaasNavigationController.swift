@@ -9,144 +9,236 @@
 import UIKit
 
 struct FoaasNavImages {
-  static let addButton: UIImage = UIImage(named: "add_button_grayscale")!
-  static let backButton: UIImage = UIImage(named: "back_button_grayscale")!
-  static let closeButton: UIImage = UIImage(named: "close_button_grayscale")!
-  static let doneButton: UIImage = UIImage(named: "done_button_grayscale")!
+	static let addButton: UIImage = UIImage(named: "add_button_grayscale")!
+	static let backButton: UIImage = UIImage(named: "back_button_grayscale")!
+	static let closeButton: UIImage = UIImage(named: "close_button_grayscale")!
+	static let doneButton: UIImage = UIImage(named: "done_button_grayscale")!
 }
 
 enum FoaasNavType {
-  case add, back, close, done, none
+	case add, back, close, done, none
 }
 
 protocol FoaasNavigationActionDelegate {
-  func leftAction()
-  func rightAction()
+	func leftAction()
+	func rightAction()
 }
 
-// TODO: read me 👇
-/*
- This navigation controller functionallity will be further implemented in v2. Currently, there are some dependancies on the
- existing action buttons that will require a bit more work that desired. For example, sizing and layout is done relative to 
- the "addButton" in the FoaasView.
- 
- When this is ready for testing/implementation, all that is needed to begin is: 
- - uncomment setting delegation, setupViewHierarchy & configureConstraints in viewDidLoad
- - conform all view controllers to FoaasNavigationActionDelegate. in each protocol function, implement the proper push/pops
- */
+protocol FoaasViewController: UIViewController {
+	
+	var navBar: FoassBottomBar { get }
+	
+}
+
+extension UIViewController: FoaasViewController {
+	
+	var navBar: FoassBottomBar {
+		return (self.navigationController as? FoaasNavigationController)?.navbar ?? FoassBottomBar()
+	}
+	
+}
+
+// square.and.arrow.up.circle.fill
+
+struct NavigationButton {
+	
+	static let add: UIButton = {
+		let button = UIButton()
+		button.setImage(UIImage(systemName: "plus.circle.fill"), for: .normal)
+		button.contentMode = .scaleAspectFit
+		button.imageView?.contentMode = .scaleAspectFit
+		return button
+	}()
+	
+	static let back: UIButton = {
+		let button = UIButton()
+		button.setImage(UIImage(systemName: "arrow.backward.circle.fill"), for: .normal)
+		button.contentMode = .scaleAspectFit
+		button.imageView?.contentMode = .scaleAspectFit
+		return button
+	}()
+	
+	static let share: UIButton = {
+		let button = UIButton()
+		button.setImage(UIImage(systemName: "square.and.arrow.up.circle.fill"), for: .normal)
+		button.contentMode = .scaleAspectFit
+		button.imageView?.contentMode = .scaleAspectFit
+		return button
+	}()
+	
+	static let profanity: UIButton = {
+		let button = UIButton()
+		button.setImage(UIImage(systemName: "exclamationmark.bubble.circle.fill"), for: .normal)
+		button.contentMode = .scaleAspectFit
+		button.imageView?.contentMode = .scaleAspectFit
+		return button
+	}()
+	
+}
 
 class FoaasNavigationController: UINavigationController, UINavigationControllerDelegate {
-  let buttonDiameter: CGFloat = 54.0
-  let buttonMargin: CGFloat = 48.0
-  var navigationActionDelegate: FoaasNavigationActionDelegate?
-  
-  
-  // MARK: - View Lifecycle
-  override func viewDidLoad() {
-    super.viewDidLoad()
-    
-    UIApplication.shared.statusBarStyle = .lightContent
-    
-    // uncomment below to start testing
-//    self.delegate = self
-//    setupViewHierarchy()
-//    configureConstraints()
-  }
-  
-  override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-    self.setNavigationBarHidden(true, animated: false)
-  }
-  
-  override func viewDidAppear(_ animated: Bool) {
-    super.viewDidAppear(animated)
-    self.bringFloatingButtonsToTop()
-  }
-  
-  
-  // MARK: - Setup
-  private func setupViewHierarchy() {
-    guard let mainWindow = UIApplication.shared.keyWindow else { return }
-    mainWindow.addSubview(leftFloatingButton)
-    mainWindow.addSubview(rightFloatingButton)
-    
-    let leftTapGesture: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(runLeftAction))
-    leftFloatingButton.addGestureRecognizer(leftTapGesture)
-    
-    let rightTapGesture: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(runRightAction))
-    rightFloatingButton.addGestureRecognizer(rightTapGesture)
-  }
-  
-  private func configureConstraints() {
-    guard let mainWindow = UIApplication.shared.keyWindow else { return }
-    stripAutoResizingMasks(leftFloatingButton, rightFloatingButton)
-    
-    [ leftFloatingButton.leadingAnchor.constraint(equalTo: mainWindow.leadingAnchor, constant: buttonMargin),
-      leftFloatingButton.bottomAnchor.constraint(equalTo: mainWindow.bottomAnchor, constant: -buttonMargin),
-      leftFloatingButton.heightAnchor.constraint(equalToConstant: buttonDiameter),
-      leftFloatingButton.widthAnchor.constraint(equalToConstant: buttonDiameter),
-      
-      rightFloatingButton.trailingAnchor.constraint(equalTo: mainWindow.trailingAnchor, constant: -buttonMargin),
-      rightFloatingButton.bottomAnchor.constraint(equalTo: mainWindow.bottomAnchor, constant: -buttonMargin),
-      rightFloatingButton.heightAnchor.constraint(equalToConstant: buttonDiameter),
-      rightFloatingButton.widthAnchor.constraint(equalToConstant: buttonDiameter),
-      ].activate()
-  }
-  
-  /// Called just before viewWillAppear in order to place the buttons over all other views
-  private func bringFloatingButtonsToTop() {
-    guard
-      let mainWindow = UIApplication.shared.keyWindow,
-      mainWindow.subviews.contains(leftFloatingButton),
-      mainWindow.subviews.contains(rightFloatingButton)
-    else { return }
-    
-	  mainWindow.bringSubviewToFront(leftFloatingButton)
-	  mainWindow.bringSubviewToFront(rightFloatingButton)
-  }
-  
-  
-  // MARK: - Actions
-  @objc private func runLeftAction() {
-    navigationActionDelegate?.leftAction()
-  }
-  
-  @objc private func runRightAction() {
-    navigationActionDelegate?.rightAction()
-  }
-  
-  
-  // MARK: - Navigation Changes
-  private func updateNavigation(left: FoaasNavType, right: FoaasNavType) {
-    switch left {
-    case FoaasNavType.add: leftFloatingButton.setImage(FoaasNavImages.addButton, for: .normal)
-    case FoaasNavType.back: leftFloatingButton.setImage(FoaasNavImages.backButton, for: .normal)
-    case FoaasNavType.close: leftFloatingButton.setImage(FoaasNavImages.closeButton, for: .normal)
-    case FoaasNavType.done: leftFloatingButton.setImage(FoaasNavImages.doneButton, for: .normal)
-    case FoaasNavType.none: leftFloatingButton.setImage(nil, for: .normal)
-    }
-    
-    switch right {
-    case FoaasNavType.add: rightFloatingButton.setImage(FoaasNavImages.addButton, for: .normal)
-    case FoaasNavType.back: rightFloatingButton.setImage(FoaasNavImages.backButton, for: .normal)
-    case FoaasNavType.close: rightFloatingButton.setImage(FoaasNavImages.closeButton, for: .normal)
-    case FoaasNavType.done: rightFloatingButton.setImage(FoaasNavImages.doneButton, for: .normal)
-    case FoaasNavType.none: rightFloatingButton.setImage(nil, for: .normal)
-    }
-  }
-  
-  func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-    switch viewController {
-    case is FoaasViewController: updateNavigation(left: .none, right: .add)
-    case is FoaasOperationsTableViewController: updateNavigation(left: .none, right: .close)
-    case is FoaasPrevewViewController: updateNavigation(left: .back, right: .done)
-    default: print("Unhandled view controller type")
-    }
-    // TODO: the current implementation works for positioning, but the buttons need actions, methods to update images & actions and shadows
-  }
-  
-  
-  // MARK: Lazy Inits
-  internal lazy var leftFloatingButton: UIButton = UIButton()
-  internal lazy var rightFloatingButton: UIButton =  UIButton()
+	let navbar: FoassBottomBar = FoassBottomBar(frame: .zero)
+	
+	// MARK: - View Lifecycle
+	override func viewDidLoad() {
+		super.viewDidLoad()
+		
+		self.view.addSubview(navbar)
+		self.delegate = self
+	}
+	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		
+		self.setNavigationBarHidden(true, animated: false)
+		positionNavbar()
+	}
+	
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+		
+		positionNavbar()
+	}
+	
+	
+	// MARK: - Setup
+	
+	private func positionNavbar() {
+		if self.isViewLoaded, let sv = navbar.superview, sv == self.view {
+			self.view.bringSubviewToFront(navbar)
+			
+			navbar.translatesAutoresizingMaskIntoConstraints = false
+			NSLayoutConstraint.activate([
+				navbar.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+				navbar.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor),
+			])
+			
+			
+//			navbar.frame = CGRect(x: (self.view.w - navbar.w) / 2.0, y: self.view.h - 100.0, width: 200.0, height: 60.0)
+		}
+		
+	}
+	
+	private func configureConstraints() {
+	}
+	
+	/// Called just before viewWillAppear in order to place the buttons over all other views
+	private func bringFloatingButtonsToTop() {
+
+	}
+	
+	
+	// MARK: - Actions
+	@objc private func runLeftAction() {
+
+	}
+	
+	@objc private func runRightAction() {
+	}
+	
+	
+	// MARK: - Navigation Changes
+	
+	func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+		positionNavbar()
+		// TODO: the current implementation works for positioning, but the buttons need actions, methods to update images & actions and shadows
+	}
+	
+	
+	// MARK: Lazy Inits
+	internal lazy var leftFloatingButton: UIButton = UIButton()
+	internal lazy var rightFloatingButton: UIButton =  UIButton()
+}
+
+final class FoassBottomBar: UIView {
+	private let buttonSize: CGFloat = 48.0
+	
+	private let stackview: UIStackView = {
+		let stackview = UIStackView(frame: .zero)
+		stackview.distribution = .equalSpacing
+		stackview.alignment = .center
+		stackview.axis = .horizontal
+		stackview.spacing = 12.0
+		return stackview
+	}()
+	
+//	private let effectsView: UIVisualEffectView = {
+//		let effect = UIBlurEffect(style: .extraLight)
+//
+//		let view = UIVisualEffectView(frame: .zero)
+//		view.effect = effect
+//		return view
+//	}()
+	
+	
+	override init(frame: CGRect = .zero) {
+		super.init(frame: frame)
+		
+//		self.addSubview(effectsView)
+//		effectsView.contentView.addSubview(stackview)
+		self.backgroundColor = .red
+		self.addSubview(stackview)
+		let add = NavigationButton.add
+		
+		self.clipsToBounds = true
+		stackview.addArrangedSubview(add)
+		add.addTarget(self, action: #selector(handleAddButton), for: .touchUpInside)
+		
+		stackview.translatesAutoresizingMaskIntoConstraints = false
+		[
+			self.widthAnchor.constraint(greaterThanOrEqualToConstant: 60.0),
+			self.widthAnchor.constraint(equalTo: stackview.widthAnchor),
+			self.topAnchor.constraint(equalTo: stackview.topAnchor, constant: -8.0),
+			self.bottomAnchor.constraint(equalTo: stackview.bottomAnchor,constant: 8.0),
+			
+			add.widthAnchor.constraint(equalToConstant: buttonSize),
+			add.heightAnchor.constraint(equalToConstant: buttonSize),
+		].activate()
+	}
+	
+	required init?(coder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
+	}
+	
+	// Adjusting nav items
+	
+	@objc private func handleAddButton() {
+		let new = UIButton()
+		new.backgroundColor = .orange
+		
+		addButton(new)
+	}
+	
+	private func addButton(_ button: UIButton) {
+		button.translatesAutoresizingMaskIntoConstraints = false
+		NSLayoutConstraint.activate([
+			button.widthAnchor.constraint(equalToConstant: buttonSize),
+			button.heightAnchor.constraint(equalToConstant: buttonSize)
+		])
+		
+		button.alpha = 0.0
+		self.stackview.addArrangedSubview(button)
+		UIView.animate(withDuration: 0.3) {
+			button.alpha = 1.0
+			self.layoutIfNeeded()
+		}
+	}
+	
+	private func removeButton(_ button: UIButton) {
+		UIView.animate(withDuration: 0.3) {
+			self.stackview.removeArrangedSubview(button)
+			button.removeFromSuperview()
+			self.layoutIfNeeded()
+		}
+	}
+	
+	override var intrinsicContentSize: CGSize {
+		return stackview.intrinsicContentSize
+	}
+	
+	override func layoutSubviews() {
+		super.layoutSubviews()
+		
+		self.layer.cornerRadius = self.h / 2.0
+	}
 }
