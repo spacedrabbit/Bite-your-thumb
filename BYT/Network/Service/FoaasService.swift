@@ -47,6 +47,11 @@ class FoaasService {
 		}
 	}
 	
+	static func getMotD() async throws -> Foaas {
+		let request = FoaasRequest(path: "/mod")
+		return try await SessionManager.shared.makeRequest(request)
+	}
+	
 	static func getOpsSDK() async throws -> [FoaasOperation] {
 		let request = FoaasRequest(path: "/operations")
 		return try await SessionManager.shared.makeRequest(request)

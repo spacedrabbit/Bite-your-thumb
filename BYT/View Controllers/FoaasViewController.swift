@@ -1,5 +1,5 @@
 //
-//  FoaasViewController.swift
+//  FoaasLandingCollectionViewController.swift
 //  BYT
 //
 //  Created by Louis Tur on 1/23/17.
@@ -10,7 +10,7 @@ import UIKit
 import Combine
 import Kingfisher
 
-class FoaasViewController: UICollectionViewController {
+class FoaasLandingCollectionViewController: UICollectionViewController {
 
 	private let backgroundImage: ImageView = {
 		let imageView = ImageView(frame: .zero)
@@ -90,15 +90,15 @@ class FoaasViewController: UICollectionViewController {
 		// of the image also becomes part of the requirements for the Task to complete...
 		// The answer: it isn't. In practice, I will see the blurhash image loaded before the full render
 		Task {
-			async let foaas = FoaasService.getFoassSDK()
+			async let foaas = FoaasService.getMotD()
 			async let image = ImageDataManager.getRandomImage()
 			
 			do {
-				let result = (try await foaas, try await image)
+				let result = (try await foaas, await image)
+//				let result = ("", await image)
 				
 				self.foaas = result.0
-				self.backgroundImage.setImage(with: result.1?.urls.regular,
-												 placeholder: UIImage(blurHash: result.1?.blurHash ?? "", size: screen.bounds.size))
+				self.backgroundImage.setImage(with: result.1?.urls.regular)
 				
 				self.generateItems()
 				self.collectionView.reloadData()
@@ -245,7 +245,7 @@ class FoaasViewController: UICollectionViewController {
 	}
 }
 
-extension FoaasViewController: UICollectionViewDelegateFlowLayout {
+extension FoaasLandingCollectionViewController: UICollectionViewDelegateFlowLayout {
 	
 	override func numberOfSections(in collectionView: UICollectionView) -> Int {
 		return 1
