@@ -109,7 +109,7 @@ class FoaasNavigationController: UINavigationController, UINavigationControllerD
 		switch sender.navigationItem {
 			
 		case .add:
-			let dtvc = FoaasOperationsTableViewController()
+			let dtvc = FoaasOperationCollectionViewController()
 			self.pushViewController(dtvc, animated: true)
 			
 		case .close:
@@ -167,6 +167,7 @@ final class FoassBottomBar: UIView {
 //		view.effect = effect
 //		return view
 //	}()
+	
 	private var widthConstraintIdeal: NSLayoutConstraint?
 	private var widthConstraintMin: NSLayoutConstraint?
 	
