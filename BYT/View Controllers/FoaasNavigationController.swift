@@ -167,7 +167,8 @@ final class FoassBottomBar: UIView {
 //		view.effect = effect
 //		return view
 //	}()
-	
+	private var widthConstraintIdeal: NSLayoutConstraint?
+	private var widthConstraintMin: NSLayoutConstraint?
 	
 	override init(frame: CGRect = .zero) {
 		super.init(frame: frame)
@@ -181,15 +182,15 @@ final class FoassBottomBar: UIView {
 		self.translatesAutoresizingMaskIntoConstraints = false
 		stackview.translatesAutoresizingMaskIntoConstraints = false
 		
-		let widthConstraintMin = self.widthAnchor.constraint(greaterThanOrEqualTo: self.heightAnchor)
-		widthConstraintMin.priority = UILayoutPriority(rawValue: 999.0)
+		widthConstraintMin = self.widthAnchor.constraint(greaterThanOrEqualTo: self.heightAnchor)
+		widthConstraintMin?.priority = UILayoutPriority(rawValue: 999.0)
 		
-		let widthConstraintIdeal = self.widthAnchor.constraint(equalTo: stackview.widthAnchor)
-		widthConstraintIdeal.priority = .defaultHigh
+		widthConstraintIdeal = self.widthAnchor.constraint(equalTo: stackview.widthAnchor)
+		widthConstraintIdeal?.priority = .defaultHigh
 		
 		[
-			widthConstraintMin,
-			widthConstraintIdeal,
+			widthConstraintMin!,
+			widthConstraintIdeal!,
 			stackview.centerXAnchor.constraint(equalTo: self.centerXAnchor),
 			self.topAnchor.constraint(equalTo: stackview.topAnchor, constant: -8.0),
 			self.bottomAnchor.constraint(equalTo: stackview.bottomAnchor,constant: 8.0),
@@ -203,6 +204,10 @@ final class FoassBottomBar: UIView {
 	// Adjusting nav items
 	
 	fileprivate func updateButtonBar(_ items: [NavigationItem], animated: Bool = true) {
+		// Keep the bar circular with 1 button, but let it expand a little to accomodate 1+
+		widthConstraintIdeal?.isActive = items.count > 1
+		widthConstraintIdeal?.constant = items.count > 1 ? 32.0 : 0.0
+		
 		if animated {
 			UIView.animate(withDuration: 0.3) {
 				self.navigationButtons.forEach({ navButton in
