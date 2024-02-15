@@ -222,7 +222,7 @@ final class FoassBottomBar: UIView {
 		}) { _ in
 			
 		}
-		
+		// test
 //		while let newBttn = remaining.popLast() {
 //			if navigationButtons.isEmpty {
 //				addButton(newBttn)
