@@ -21,6 +21,7 @@ final class ImageDataManager: ObservableObject {
 	private (set) var cachedImages: [UpsplashImage] = [] {
 		didSet {
 			saveImages(cachedImages)
+			ImageDataManager.cachedImagePublisher.send(cachedImages)
 		}
 	}
 	
@@ -28,6 +29,11 @@ final class ImageDataManager: ObservableObject {
 		DispatchQueue.main.sync {
 			return ScenePeeker.shared.rootWindow?.screen ?? UIScreen()
 		}
+	}
+	
+	private static let cachedImagePublisher = PassthroughSubject<[UpsplashImage], Never>()
+	static var imagePublisher: AnyPublisher<[UpsplashImage], Never> {
+		return cachedImagePublisher.eraseToAnyPublisher()
 	}
 	
 	private init() {}
@@ -65,9 +71,24 @@ final class ImageDataManager: ObservableObject {
 			print("Returning random image from cache")
 			return shared.cachedImages.randomElement()
 		} else {
-			// TODO: Might be good to cache this image as it gets received
 			print("Returning random image from network service")
-			return try? await UpsplashService.getRandomImage(size: shared.screen.bounds.size, scale: shared.screen.scale)
+			let result = try? await UpsplashService.getRandomImage(size: shared.screen.bounds.size, scale: shared.screen.scale)
+			guard let result else { return nil }
+			shared.cachedImages = [result]
+			return result
+		}
+	}
+	
+	static func availableImages() async -> [UpsplashImage] {
+		if shared.cachedImages.count > 0 {
+			return shared.cachedImages
+		} else {
+			let results = try? await UpsplashService.getRandomImages(size: shared.screen.bounds.size, scale: shared.screen.scale, count: 20)
+			
+			guard let results else { return [] }
+			shared.cachedImages = results
+			
+			return results
 		}
 	}
 	
