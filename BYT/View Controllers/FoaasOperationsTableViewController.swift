@@ -7,6 +7,80 @@
 //
 
 import UIKit
+import Combine
+
+class FoaasOperationCollectionViewCell: UICollectionViewCell {
+	
+	@Published var operation: FoaasOperation?
+	@Published var previewImage: UpsplashImage?
+	private var cancellables: Set<AnyCancellable> = []
+	
+	private let effectsView: UIVisualEffectView = {
+		let effect = UIBlurEffect(style: .extraLight)
+		
+		let view = UIVisualEffectView(frame: .zero)
+		view.effect = effect
+		view.clipsToBounds = true
+		view.layer.cornerRadius = 16.0
+		
+		return view
+	}()
+	
+	private let imagePreview: ImageView = {
+		let imageView = ImageView(frame: .zero)
+		imageView.contentMode = .scaleAspectFill
+		return imageView
+	}()
+	
+	private let titleLabel: UILabel = {
+		let label = UILabel()
+		label.textColor = .black
+		label.font = UIFont.systemFont(ofSize: 16.0)
+		return label
+	}()
+	
+	override init(frame: CGRect) {
+		super.init(frame: .zero)
+		
+		$operation
+			.compactMap{ $0 }
+			.sink { ops in
+				self.titleLabel.text = ops.shortname
+			}.store(in: &cancellables)
+		
+		$previewImage
+			.sink { image in
+				self.imagePreview.setImage(with: image?.urls.small)
+			}.store(in: &cancellables)
+		
+		effectsView.contentView.addSubview(imagePreview)
+		self.contentView.addSubview(effectsView)
+		self.contentView.addSubview(titleLabel)
+		
+		stripAutoResizingMasks(effectsView, imagePreview, titleLabel)
+		
+		NSLayoutConstraint.activate([
+			effectsView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor),
+			effectsView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor),
+			effectsView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor),
+			effectsView.topAnchor.constraint(equalTo: self.contentView.topAnchor),
+			
+			imagePreview.topAnchor.constraint(equalTo: effectsView.contentView.topAnchor),
+			imagePreview.leadingAnchor.constraint(equalTo: effectsView.contentView.leadingAnchor),
+			imagePreview.widthAnchor.constraint(equalTo: effectsView.contentView.widthAnchor),
+			imagePreview.heightAnchor.constraint(equalTo: effectsView.contentView.heightAnchor),
+			
+			titleLabel.centerXAnchor.constraint(equalTo: self.contentView.centerXAnchor),
+			titleLabel.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
+			titleLabel.widthAnchor.constraint(lessThanOrEqualTo: self.contentView.widthAnchor, multiplier: 0.9),
+		])
+	}
+	
+	required init?(coder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
+	}
+	
+}
 
 class FoaasOperationsTableViewController: UITableViewController, FoaasViewController {
 	
