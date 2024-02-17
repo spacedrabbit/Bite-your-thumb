@@ -81,12 +81,16 @@ class FoaasOperationCollectionViewController: UICollectionViewController, FoaasV
 	// MARK: - Helpers
 	
 	private func generateLayout() -> UICollectionViewCompositionalLayout {
-		// TODO: Margins
 		let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(1.0))
 		let item = NSCollectionLayoutItem(layoutSize: itemSize)
+		
 		let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalWidth(0.75))
 		let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+		// group.interItemSpacing = .fixed(12.0)
+		
 		let section = NSCollectionLayoutSection(group: group)
+		section.interGroupSpacing = 12.0
+		section.contentInsets = NSDirectionalEdgeInsets(top: 20.0, leading: 12.0, bottom: 20.0, trailing: 12.0)
 		
 		return UICollectionViewCompositionalLayout(section: section)
 	}
@@ -159,7 +163,6 @@ fileprivate class FoaasOperationCollectionViewCell: UICollectionViewCell {
 				self.imagePreview.setImage(with: image.urls.small)
 			}.store(in: &cancellables)
 		
-//		effectsView.contentView.addSubview(imagePreview)
 		self.contentView.addSubview(imagePreview)
 		self.contentView.addSubview(effectsView)
 		self.contentView.addSubview(titleLabel)
@@ -188,135 +191,3 @@ fileprivate class FoaasOperationCollectionViewCell: UICollectionViewCell {
 	}
 	
 }
-
-class FoaasOperationsTableViewController: UITableViewController, FoaasViewController {
-	
-	var navigationItems: [NavigationItem] = [.done]
-    
-    let operations = FoaasDataManager.shared.operations
-    let cellIdentifier = "FoaasOperationCellIdentifier"
-    
-    // MARK: - View Lifecycle
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        self.tableView.separatorColor = UIColor.clear
-        self.title = "Operations"
-        
-		self.tableView.rowHeight = UITableView.automaticDimension
-        self.tableView.estimatedRowHeight = 64.0
-      
-        setupViewHierarchy()
-    }
-
-    private func setupViewHierarchy() {
-      self.view.addSubview(floatingButton)
-      
-      let rightSwipe: UISwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(popTableView))
-      rightSwipe.direction = .right
-      self.view.addGestureRecognizer(rightSwipe)
-
-      self.tableView.register(FoaasOperationsTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
-      self.tableView.backgroundColor = ColorManager.shared.currentColorScheme.primary
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        // TODO: remove this kind of implementation and add it to the FoaasNavigationController
-        guard let window = UIApplication.shared.keyWindow else { return }
-        window.addSubview(floatingButton)
-        
-        configureConstraints()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        floatingButton.removeFromSuperview()
-    }
-    
-    // MARK: - Tableview data source
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return operations.count
-    }
-    
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
-       
-        guard let operationCell = cell as? FoaasOperationsTableViewCell else {
-            cell.textLabel?.text = "INVALID"
-            return cell
-        }
-                
-        operationCell.operationNameLabel.text = operations[indexPath.row].name.filterBadLanguage()
-        operationCell.backgroundColor = ColorManager.shared.currentColorScheme.colorArray[indexPath.row % ColorManager.shared.currentColorScheme.colorArray.count]
-        return operationCell
-    }
-    
-    // MARK: - Tableview Delegate
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard
-            let navVC = self.navigationController
-        else { return }
-		let selectedOperation = operations[indexPath.row]
-        let dtvc = FoaasPrevewViewController()
-        dtvc.set(operation: selectedOperation)
-        navVC.pushViewController(dtvc, animated: true)
-    }
-    
-    //MARK: - Views
-    
-    internal lazy var floatingButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.addTarget(self, action: #selector(floatingButtonClicked(sender:)), for: .touchUpInside)
-        button.setImage(UIImage(named: "x_symbol")!, for: .normal)
-        button.backgroundColor = ColorManager.shared.currentColorScheme.accent
-        button.layer.cornerRadius = 26
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOpacity = 0.8
-        button.layer.shadowOffset = CGSize(width: 0, height: 5)
-        button.layer.shadowRadius = 5
-        button.clipsToBounds = false
-        return button
-    }()
-    
-    //MARK: - Actions
-	
-	@objc
-    func floatingButtonClicked(sender: UIButton) {
-        let newTransform = CGAffineTransform(scaleX: 1.1, y: 1.1)
-        let originalTransform = sender.imageView!.transform
-        
-        UIView.animate(withDuration: 0.1, animations: {
-            sender.layer.transform = CATransform3DMakeAffineTransform(newTransform)
-        }, completion: { (complete) in
-            sender.layer.transform = CATransform3DMakeAffineTransform(originalTransform)
-        })
-      
-        popTableView()
-    }
-  
-	@objc
-    func popTableView() {
-      _ = navigationController?.popViewController(animated: true)
-    }
-    
-    //MARK: - Constraints
-    
-    func configureConstraints () {
-        floatingButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        guard let window = UIApplication.shared.keyWindow else { return }
-        
-        [   floatingButton.trailingAnchor.constraint(equalTo: window.trailingAnchor, constant: -48.0),
-            floatingButton.bottomAnchor.constraint(equalTo: window.bottomAnchor, constant: -48.0),
-            floatingButton.widthAnchor.constraint(equalToConstant: 54.0),
-            floatingButton.heightAnchor.constraint(equalToConstant: 54.0) ].activate()
-    }
-}
-
