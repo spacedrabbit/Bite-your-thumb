@@ -81,19 +81,36 @@ class FoaasOperationCollectionViewController: UICollectionViewController, FoaasV
 	// MARK: - Helpers
 	
 	private func generateLayout() -> UICollectionViewCompositionalLayout {
-		let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(1.0))
-		let item = NSCollectionLayoutItem(layoutSize: itemSize)
+		let layout = UICollectionViewCompositionalLayout { section, layoutEnvironment in
+			let spacing: CGFloat = 12.0
+			let contentInsets = NSDirectionalEdgeInsets(top: 20.0, leading: 12.0, bottom: 20.0, trailing: 12.0)
+			let itemCount: CGFloat = 2
+			
+			let totalHorizontalInsets = contentInsets.leading + contentInsets.trailing
+			let totalAvailableWidth = layoutEnvironment.container.effectiveContentSize.width - totalHorizontalInsets
+			let totalSpacing = spacing * (itemCount - 1)
+			
+			// Calculate the available width for each item
+			let adjustedItemWidth = (totalAvailableWidth - totalSpacing) / itemCount
+			let itemFractionalWidth = adjustedItemWidth / totalAvailableWidth
+
+			let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(itemFractionalWidth), heightDimension: .fractionalHeight(1.0))
+			let item = NSCollectionLayoutItem(layoutSize: itemSize)
+
+			let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalWidth(0.75))
+			let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+			group.interItemSpacing = .fixed(spacing)
+			
+			let section = NSCollectionLayoutSection(group: group)
+			section.interGroupSpacing = 12.0
+			section.contentInsets = NSDirectionalEdgeInsets(top: 20.0, leading: 12.0, bottom: 20.0, trailing: 12.0)
+			
+			return section
+		}
 		
-		let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalWidth(0.75))
-		let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-		// group.interItemSpacing = .fixed(12.0)
-		
-		let section = NSCollectionLayoutSection(group: group)
-		section.interGroupSpacing = 12.0
-		section.contentInsets = NSDirectionalEdgeInsets(top: 20.0, leading: 12.0, bottom: 20.0, trailing: 12.0)
-		
-		return UICollectionViewCompositionalLayout(section: section)
+		return layout
 	}
+
 }
 
 extension FoaasOperationCollectionViewController: UICollectionViewDelegateFlowLayout {
