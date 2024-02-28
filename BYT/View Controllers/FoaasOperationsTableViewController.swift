@@ -116,6 +116,7 @@ class FoaasOperationCollectionViewController: UICollectionViewController, FoaasV
 }
 
 extension FoaasOperationCollectionViewController: UICollectionViewDelegateFlowLayout {
+	
 	override func numberOfSections(in collectionView: UICollectionView) -> Int {
 		return 1
 	}
@@ -132,6 +133,14 @@ extension FoaasOperationCollectionViewController: UICollectionViewDelegateFlowLa
 			cell.previewImage = images[indexPath.item % images.count]
 			
 			return cell
+		}
+	}
+	
+	override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+		switch items[indexPath.item] {
+		case .operation(let op):
+			let dtvc = FoaasPrevewViewController(operation: op)
+			self.navigationController?.pushViewController(dtvc, animated: true)
 		}
 	}
 }

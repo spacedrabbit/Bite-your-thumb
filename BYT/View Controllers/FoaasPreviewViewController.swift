@@ -23,6 +23,12 @@ class FoaasPrevewViewController: UIViewController, FoaasTextFieldDelegate, Foaas
 	var tapGestureRecognizer: UITapGestureRecognizer!
 	var bottomConstraint: NSLayoutConstraint? = nil
 	
+	convenience init(operation: FoaasOperation) {
+		self.init(nibName: nil, bundle: nil)
+		self.operation = operation
+		self.pathBuilder = FoaasPathBuilder(operation: operation)
+	}
+	
 	// MARK: - View Lifecycle
 	override func viewDidLoad() {
 		super.viewDidLoad()
