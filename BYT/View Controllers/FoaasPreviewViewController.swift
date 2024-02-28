@@ -9,14 +9,12 @@
 
 import UIKit
 
-class FoaasPrevewViewController: UIViewController, FoaasTextFieldDelegate, FoaasPrevewViewDelegate, FoaasViewController {
-	var navigationItems: [NavigationItem] = [.done]
+class CreateBiteController: UIViewController, FoaasViewController {
+	var navigationItems: [NavigationItem] = [.profanity, .done]
 	
 	internal private(set) var operation: FoaasOperation?
 	private var pathBuilder: FoaasPathBuilder?
-	private var foaas: Foaas!
-	
-	var foaasSettingMenuDelegate : FoaasSettingMenuDelegate!
+	private let foaas: Foaas
 	
 	var previewText: NSString = ""
 	var previewAttributedText: NSAttributedString = NSAttributedString()

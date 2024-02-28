@@ -10,7 +10,7 @@ import UIKit
 import Combine
 
 class FoaasOperationCollectionViewController: UICollectionViewController, FoaasViewController {
-	var navigationItems: [NavigationItem] = [.done]
+	var navigationItems: [NavigationItem] = [.profanity, .done]
 	
 	private lazy var refreshControl: UIRefreshControl = {
 		let control = UIRefreshControl()
