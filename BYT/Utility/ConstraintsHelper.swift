@@ -14,7 +14,7 @@ extension UIView {
 		guard let superview,
 				otherView.superview === superview
 				|| superview === otherView else { return [] }
-		stripAutoResizingMasks([self, otherView])
+		stripAutoResizingMasks([self])
 		
 		return [
 			self.centerYAnchor.constraint(equalTo: otherView.centerYAnchor),

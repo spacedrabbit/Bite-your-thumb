@@ -8,13 +8,117 @@
 //
 
 import UIKit
+import Combine
 
-class CreateBiteController: UIViewController, FoaasViewController {
+class CreateBiteViewController: UIViewController, FoaasViewController {
+	var navigationItems: [NavigationItem] = [.profanity, .done]
+	
+	private let op: FoaasOperation
+	private let builder: FoaasPathBuilder
+	
+	private let foaasSubject: PassthroughSubject<Foaas, Never> = PassthroughSubject()
+	private let imageSubject: PassthroughSubject<UpsplashImage, Never> = PassthroughSubject()
+	
+	private let preview = EditBiteView()
+	
+	private var bag: Set<AnyCancellable> = []
+	
+	init(operation: FoaasOperation) {
+		self.op = operation
+		self.builder = FoaasPathBuilder(operation: op)
+		super.init(nibName: nil, bundle: nil)
+		
+		let keyboardShowPublisher = NotificationCenter.default
+			.publisher(for: UIResponder.keyboardWillShowNotification)
+		let keyboardHidePublisher = NotificationCenter.default
+			.publisher(for: UIResponder.keyboardWillHideNotification)
+		
+		keyboardShowPublisher
+			.receive(on: DispatchQueue.main)
+			.compactMap(KeyboardNotificationContext.init(notification:))
+			.sink(receiveValue: handleKeyboardEvent)
+			.store(in: &bag)
+		
+		keyboardHidePublisher
+			.receive(on: DispatchQueue.main)
+			.compactMap(KeyboardNotificationContext.init(notification:))
+			.sink(receiveValue: handleKeyboardEvent)
+			.store(in: &bag)
+		
+		foaasSubject
+			.combineLatest(imageSubject)
+			.receive(on: DispatchQueue.main)
+			.sink { (foaas, image) in
+				self.preview.foaasSubject.send(foaas)
+				self.preview.imageSubject.send(image)
+			}.store(in: &bag)
+	}
+	
+	required init?(coder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
+	}
+	
+	// MARK: - View Lifecycle
+	
+	override func viewDidLoad() {
+		super.viewDidLoad()
+		self.view.addSubview(preview)
+		configureConstraints()
+		reload()
+	}
+	
+	// MARK: - Keyboard
+	
+	private func handleKeyboardEvent(_ ctx: KeyboardNotificationContext) {
+		if ctx.state.isPresenting {
+			print("Keyboard is presenting: \(ctx.state)")
+		} else {
+			print("Keyboard is dismissing: \(ctx.state)")
+		}
+	}
+	
+	// MARK: - Reload
+	
+	private func reload() {
+		Task {
+			async let foaas = FoaasService.getFoaas(from: self.builder.buildPath())
+			async let image = ImageDataManager.getRandomImage()
+			
+			do {
+				let result = (try await foaas, await image)
+				self.foaasSubject.send(result.0)
+				if let image = result.1 {
+					self.imageSubject.send(image)
+				}
+				
+			} catch {
+				print("Error occurred: \(error)")
+			}
+		}
+	}
+	
+	// MARK: - Layout
+	
+	private func configureConstraints() {
+		preview.translatesAutoresizingMaskIntoConstraints = false
+		[
+			preview.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
+			preview.heightAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.heightAnchor, constant: -foaasNavigationBar.h),
+			preview.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+			preview.widthAnchor.constraint(equalTo: self.view.widthAnchor),
+		].activate()
+	}
+	
+}
+
+/*
+
+class FoaasPreviewViewController: UIViewController, FoaasViewController {
 	var navigationItems: [NavigationItem] = [.profanity, .done]
 	
 	internal private(set) var operation: FoaasOperation?
 	private var pathBuilder: FoaasPathBuilder?
-	private let foaas: Foaas
+	private let foaas: Foaas = Foaas(message: "", subtitle: "")
 	
 	var previewText: NSString = ""
 	var previewAttributedText: NSAttributedString = NSAttributedString()
@@ -251,3 +355,4 @@ class CreateBiteController: UIViewController, FoaasViewController {
 		return previewView
 	}()
 }
+*/

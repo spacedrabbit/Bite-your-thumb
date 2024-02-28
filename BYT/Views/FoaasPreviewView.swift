@@ -12,12 +12,31 @@ import Combine
 
 class EditBiteView: UIView {
 	
-	private var contentView = UIView()
+	private var contentView: UIView = {
+		let view = UIView()
+		view.clipsToBounds = true
+		view.layer.cornerRadius = 16.0
+		
+		view.layer.shadowPath = UIBezierPath(roundedRect: view.bounds, cornerRadius: 16.0).cgPath
+		view.layer.shadowColor = UIColor.black.withAlphaComponent(0.6).cgColor
+		view.layer.shadowRadius = 6.0
+		view.layer.shadowOffset = CGSize(width: 0.0, height: 6.0)
+		return view
+	}()
 	
 	private let backgroundImage: ImageView = {
 		let imageView = ImageView(frame: .zero)
 		imageView.contentMode = .scaleAspectFill
 		return imageView
+	}()
+	
+	private var previewLabel: UILabel = {
+		let label = UILabel()
+		label.font = UIFont.Roboto.light(size: 24.0)
+		label.textColor = .white
+		label.textAlignment = .center
+		label.numberOfLines = 0
+		return label
 	}()
 	
 	private var previewTextView: UITextView = {
@@ -29,9 +48,70 @@ class EditBiteView: UIView {
 		return textView
 	}()
 	
-	var foaas: CurrentValueSubject<Foaas?, Never> = CurrentValueSubject(nil)
+	let foaasSubject: CurrentValueSubject<Foaas, Never> = CurrentValueSubject(Foaas(message: "", subtitle: ""))
+	let imageSubject: CurrentValueSubject<UpsplashImage?, Never> = CurrentValueSubject(nil)
 	
+	private var bag: Set<AnyCancellable> = []
 	
+	init() {
+		super.init(frame: .zero)
+		
+		self.addSubview(contentView)
+		contentView.addSubview(backgroundImage)
+		contentView.addSubview(previewLabel)
+		
+		configureConstraints()
+		
+		foaasSubject
+			.dropFirst(1)
+			.receive(on: DispatchQueue.main)
+			.sink(receiveValue: { new in
+				self.previewLabel.text = new.description
+				self.layoutIfNeeded()
+			}).store(in: &bag)
+		
+		imageSubject
+			.dropFirst(1)
+			.compactMap({ $0 })
+			.receive(on: DispatchQueue.main)
+			.sink(receiveValue: { new in
+				self.backgroundImage.setImage(with: new.urls.regular)
+			})
+			.store(in: &bag)
+	}
+	
+	required init?(coder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
+	}
+	
+	private func configureConstraints() {
+		stripAutoResizingMasks([self, contentView, backgroundImage, previewLabel])
+		backgroundImage.constrainBounds(to: contentView).activate()
+		
+		previewLabel.setContentCompressionResistancePriority(.required, for: .vertical)
+		
+		let contentTargetHeight = contentView.heightAnchor.constraint(greaterThanOrEqualTo: previewLabel.heightAnchor, constant: 20.0)
+		contentTargetHeight.priority = UILayoutPriority(rawValue: 999.0)
+		
+		let contentMinimumHeight = contentView.heightAnchor.constraint(equalTo: previewLabel.heightAnchor, constant: 80.0)
+		contentMinimumHeight.priority = UILayoutPriority(rawValue: 990.0)
+		let contentIdealHeight = contentView.heightAnchor.constraint(equalTo: previewLabel.heightAnchor, constant: 20.0)
+		contentIdealHeight.priority = UILayoutPriority(rawValue: 995.0)
+		
+		[
+			contentView.widthAnchor.constraint(equalTo: self.widthAnchor, constant: -20.0),
+			contentView.heightAnchor.constraint(equalTo: self.heightAnchor, constant: -20.0),
+			contentView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+			contentView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+			
+			previewLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+			previewLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+			previewLabel.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.88),
+			
+			contentIdealHeight,
+			contentMinimumHeight,
+		].activate()
+	}
 }
 
 protocol FoaasPrevewViewDelegate {

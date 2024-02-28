@@ -236,7 +236,7 @@ class HomeViewController: UICollectionViewController, FoaasViewController {
 	}
 }
 
-extension FoaasLandingCollectionViewController: UICollectionViewDelegateFlowLayout {
+extension HomeViewController: UICollectionViewDelegateFlowLayout {
 	
 	override func numberOfSections(in collectionView: UICollectionView) -> Int {
 		return 1

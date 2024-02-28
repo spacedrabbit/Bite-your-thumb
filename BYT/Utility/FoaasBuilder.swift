@@ -41,12 +41,12 @@ class FoaasPathBuilder {
 	 
 	 - returns: A `String` that contains baseURLString and updated FoaasOperation.url needed to create a `URL` to request a `Foaas` object
 	 */
-	func build() -> String {
+	func buildPath() -> String {
 		var urlString = operation.url
 		for (k, v) in operationFields {
 			urlString = urlString.replacingOccurrences(of: ":\(k)", with: v.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlPathAllowed)!)
 		}
-		return baseURLString + urlString
+		return urlString
 	}
 	
 	func update(key: String, value: String)  {

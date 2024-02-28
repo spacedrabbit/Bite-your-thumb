@@ -139,8 +139,8 @@ extension FoaasOperationCollectionViewController: UICollectionViewDelegateFlowLa
 	override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 		switch items[indexPath.item] {
 		case .operation(let op):
-			let dtvc = FoaasPrevewViewController(operation: op)
-			self.navigationController?.pushViewController(dtvc, animated: true)
+			let dtvc = CreateBiteViewController(operation: op)
+			self.foaasNavigationController.pushViewController(dtvc, animated: true)
 		}
 	}
 }

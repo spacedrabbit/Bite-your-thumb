@@ -13,7 +13,7 @@ struct FoaasField: Codable {
 	let field: String
 	
 	var key: String { return field.lowercased() }
-	var defaultValue: String { return "<\(name)>" }
+	var defaultValue: String { return name }
 	
 	var description: String {
 		return "Name: \(name)   Field: \(field)"
