@@ -12,6 +12,8 @@ import UIKit
 
 protocol FoaasViewController: UIViewController {
 	
+	var foaasNavigationController: FoaasNavigationController { get }
+	
 	var foaasNavigationBar: FoassBottomBar { get }
 	
 	var navigationItems: [NavigationItem] { get set }
@@ -22,6 +24,11 @@ extension FoaasViewController {
 	
 	var foaasNavigationBar: FoassBottomBar {
 		return (self.navigationController as? FoaasNavigationController)?.navbar ?? FoassBottomBar()
+	}
+	
+	var foaasNavigationController: FoaasNavigationController {
+		return self.navigationController as? FoaasNavigationController
+			?? FoaasNavigationController(rootViewController: UIViewController(nibName: nil, bundle: nil))
 	}
 
 }
@@ -149,7 +156,7 @@ final class FoassBottomBar: UIView {
 	
 	private let stackview: UIStackView = {
 		let stackview = UIStackView(frame: .zero)
-		stackview.distribution = .equalSpacing
+		stackview.distribution = .equalCentering
 		stackview.alignment = .center
 		stackview.axis = .horizontal
 		stackview.spacing = 12.0
@@ -160,41 +167,47 @@ final class FoassBottomBar: UIView {
 		return stackview.arrangedSubviews.compactMap({ $0 as? NavigationButton })
 	}
 
-//	private let effectsView: UIVisualEffectView = {
-//		let effect = UIBlurEffect(style: .extraLight)
-//
-//		let view = UIVisualEffectView(frame: .zero)
-//		view.effect = effect
-//		return view
-//	}()
+	private let effectsView: UIVisualEffectView = {
+		let effect = UIBlurEffect(style: .systemMaterialLight)
+		let view = UIVisualEffectView(frame: .zero)
+		view.effect = effect
+		return view
+	}()
 	
 	private var widthConstraintIdeal: NSLayoutConstraint?
 	private var widthConstraintMin: NSLayoutConstraint?
+	private var stackWidthConstraintIdeal: NSLayoutConstraint?
 	
 	override init(frame: CGRect = .zero) {
 		super.init(frame: frame)
-		
-//		self.addSubview(effectsView)
-//		effectsView.contentView.addSubview(stackview)
-		self.backgroundColor = .red
+
+		self.addSubview(effectsView)
 		self.addSubview(stackview)
 		self.clipsToBounds = true
 		
-		self.translatesAutoresizingMaskIntoConstraints = false
-		stackview.translatesAutoresizingMaskIntoConstraints = false
-		
+		stripAutoResizingMasks([self, effectsView, stackview])
+
 		widthConstraintMin = self.widthAnchor.constraint(greaterThanOrEqualTo: self.heightAnchor)
 		widthConstraintMin?.priority = UILayoutPriority(rawValue: 999.0)
 		
-		widthConstraintIdeal = self.widthAnchor.constraint(equalTo: stackview.widthAnchor)
-		widthConstraintIdeal?.priority = .defaultHigh
+		if let screenWidth = ScenePeeker.shared.rootWindow?.bounds.size.width {
+			widthConstraintIdeal = self.widthAnchor.constraint(equalToConstant: screenWidth - 40.0)
+			widthConstraintIdeal?.priority = .defaultHigh
+			stackWidthConstraintIdeal = stackview.widthAnchor.constraint(equalTo: self.widthAnchor, constant: -28.0)
+			stackWidthConstraintIdeal?.priority = .defaultHigh
+		} else {
+			widthConstraintIdeal = self.widthAnchor.constraint(equalTo: stackview.widthAnchor)
+			widthConstraintIdeal?.priority = .defaultHigh
+		}
 		
+		stackWidthConstraintIdeal?.isActive = true
+		effectsView.constrainBounds(to: self).activate()
 		[
 			widthConstraintMin!,
 			widthConstraintIdeal!,
+			self.heightAnchor.constraint(equalToConstant: buttonSize + 16.0),
 			stackview.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-			self.topAnchor.constraint(equalTo: stackview.topAnchor, constant: -8.0),
-			self.bottomAnchor.constraint(equalTo: stackview.bottomAnchor,constant: 8.0),
+			stackview.centerYAnchor.constraint(equalTo: self.centerYAnchor),
 		].activate()
 	}
 	
@@ -207,13 +220,16 @@ final class FoassBottomBar: UIView {
 	fileprivate func updateButtonBar(_ items: [NavigationItem], animated: Bool = true) {
 		// Keep the bar circular with 1 button, but let it expand a little to accomodate 1+
 		widthConstraintIdeal?.isActive = items.count > 1
-		widthConstraintIdeal?.constant = items.count > 1 ? 32.0 : 0.0
+		widthConstraintMin?.isActive = items.count == 1
+		stackWidthConstraintIdeal?.isActive = widthConstraintIdeal?.isActive ?? false
 		
+		self.navigationButtons.forEach({ navButton in
+			navButton.isHidden = items.contains(navButton.navigationItem) ? false : true
+		})
 		if animated {
-			UIView.animate(withDuration: 0.3) {
+			UIView.animate(withDuration: 0.3, delay: 0.0, usingSpringWithDamping: 0.85, initialSpringVelocity: 0.7, options: [.beginFromCurrentState]) {
 				self.navigationButtons.forEach({ navButton in
 					navButton.alpha = items.contains(navButton.navigationItem) ? 1.0 : 0.0
-					navButton.isHidden = items.contains(navButton.navigationItem) ? false : true
 				})
 				self.layoutIfNeeded()
 			}

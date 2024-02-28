@@ -9,7 +9,8 @@
 
 import UIKit
 
-class FoaasPrevewViewController: UIViewController, FoaasTextFieldDelegate, FoaasPrevewViewDelegate{
+class FoaasPrevewViewController: UIViewController, FoaasTextFieldDelegate, FoaasPrevewViewDelegate, FoaasViewController {
+	var navigationItems: [NavigationItem] = [.done]
 	
 	internal private(set) var operation: FoaasOperation?
 	private var pathBuilder: FoaasPathBuilder?
