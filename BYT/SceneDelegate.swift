@@ -21,7 +21,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		
 		ScenePeeker.shared.setWindow(window)
 		
-		let root = FoaasLandingCollectionViewController()
+		let root = HomeViewController()
 		let nav = FoaasNavigationController(rootViewController: root)
 		self.window?.rootViewController = nav
 		self.window?.makeKeyAndVisible()

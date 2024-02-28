@@ -1,5 +1,5 @@
 //
-//  FoaasLandingCollectionViewController.swift
+//  HomeViewController.swift
 //  BYT
 //
 //  Created by Louis Tur on 1/23/17.
@@ -10,7 +10,7 @@ import UIKit
 import Combine
 import Kingfisher
 
-class FoaasLandingCollectionViewController: UICollectionViewController, FoaasViewController {
+class HomeViewController: UICollectionViewController, FoaasViewController {
 	var navigationItems: [NavigationItem] = [.add]
 	
 	private let backgroundImage: ImageView = {

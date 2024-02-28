@@ -35,7 +35,7 @@
 		14CFEC161E34363300BD46CF /* FoaasTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CFEC121E34363300BD46CF /* FoaasTemplate.swift */; };
 		14CFEC191E34394D00BD46CF /* FoaasService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CFEC171E34394D00BD46CF /* FoaasService.swift */; };
 		14CFEC1A1E34394D00BD46CF /* FoaasDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CFEC181E34394D00BD46CF /* FoaasDataManager.swift */; };
-		14CFEC401E3705AC00BD46CF /* FoaasViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CFEC3F1E3705AC00BD46CF /* FoaasViewController.swift */; };
+		14CFEC401E3705AC00BD46CF /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CFEC3F1E3705AC00BD46CF /* HomeViewController.swift */; };
 		14CFEC421E3705E800BD46CF /* FoaasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CFEC411E3705E800BD46CF /* FoaasView.swift */; };
 		14CFEC441E3707C600BD46CF /* FoaasOperationsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CFEC431E3707C600BD46CF /* FoaasOperationsTableViewController.swift */; };
 		14CFEC461E37083400BD46CF /* FoaasOperationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CFEC451E37083400BD46CF /* FoaasOperationTableViewCell.swift */; };
@@ -107,7 +107,7 @@
 		14CFEC121E34363300BD46CF /* FoaasTemplate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoaasTemplate.swift; path = Models/FoaasTemplate.swift; sourceTree = "<group>"; };
 		14CFEC171E34394D00BD46CF /* FoaasService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoaasService.swift; sourceTree = "<group>"; };
 		14CFEC181E34394D00BD46CF /* FoaasDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoaasDataManager.swift; path = Managers/FoaasDataManager.swift; sourceTree = "<group>"; };
-		14CFEC3F1E3705AC00BD46CF /* FoaasViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.swift; name = FoaasViewController.swift; path = "View Controllers/FoaasViewController.swift"; sourceTree = "<group>"; tabWidth = 4; };
+		14CFEC3F1E3705AC00BD46CF /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.swift; name = HomeViewController.swift; path = "View Controllers/HomeViewController.swift"; sourceTree = "<group>"; tabWidth = 4; };
 		14CFEC411E3705E800BD46CF /* FoaasView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoaasView.swift; path = Views/FoaasView.swift; sourceTree = "<group>"; };
 		14CFEC431E3707C600BD46CF /* FoaasOperationsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoaasOperationsTableViewController.swift; path = "View Controllers/FoaasOperationsTableViewController.swift"; sourceTree = "<group>"; };
 		14CFEC451E37083400BD46CF /* FoaasOperationTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoaasOperationTableViewCell.swift; path = Views/FoaasOperationTableViewCell.swift; sourceTree = "<group>"; };
@@ -295,7 +295,7 @@
 			isa = PBXGroup;
 			children = (
 				81DBD7641E4B390200BCF0CC /* FoaasAboutViewController.swift */,
-				14CFEC3F1E3705AC00BD46CF /* FoaasViewController.swift */,
+				14CFEC3F1E3705AC00BD46CF /* HomeViewController.swift */,
 				14CFEC431E3707C600BD46CF /* FoaasOperationsTableViewController.swift */,
 				14CFEC471E37088A00BD46CF /* FoaasPreviewViewController.swift */,
 				14CFEC4B1E3709A700BD46CF /* FoaasNavigationController.swift */,
@@ -482,7 +482,7 @@
 				DE6658F91E3E884800513850 /* ColorScheme.swift in Sources */,
 				14CFEC441E3707C600BD46CF /* FoaasOperationsTableViewController.swift in Sources */,
 				1498A3031E3E55F0003A3E5C /* ColorManager.swift in Sources */,
-				14CFEC401E3705AC00BD46CF /* FoaasViewController.swift in Sources */,
+				14CFEC401E3705AC00BD46CF /* HomeViewController.swift in Sources */,
 				14CD3A942B8FA43F001C3FB8 /* ConstraintsHelper.swift in Sources */,
 				81661B431E4960660044756A /* FoaasTeamMemberView.swift in Sources */,
 				14CFEC4A1E3708C300BD46CF /* FoaasTextField.swift in Sources */,

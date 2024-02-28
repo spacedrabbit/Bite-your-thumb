@@ -7,6 +7,32 @@
 //
 
 import UIKit
+import Kingfisher
+import Combine
+
+class EditBiteView: UIView {
+	
+	private var contentView = UIView()
+	
+	private let backgroundImage: ImageView = {
+		let imageView = ImageView(frame: .zero)
+		imageView.contentMode = .scaleAspectFill
+		return imageView
+	}()
+	
+	private var previewTextView: UITextView = {
+		let textView: UITextView = UITextView()
+		textView.font = UIFont.Roboto.light(size: 24.0)
+		textView.textColor = .white
+		textView.isEditable = false
+		
+		return textView
+	}()
+	
+	var foaas: CurrentValueSubject<Foaas?, Never> = CurrentValueSubject(nil)
+	
+	
+}
 
 protocol FoaasPrevewViewDelegate {
 	func backButtonPressed()
@@ -66,19 +92,6 @@ class FoaasPreviewView: UIView, UIGestureRecognizerDelegate {
 			previewTextView.leadingAnchor.constraint(equalTo: self.contentContainerView.leadingAnchor, constant: 16.0),
 			previewTextView.widthAnchor.constraint(equalTo: self.widthAnchor, constant: -32.0),
 			previewTextViewHeightConstraint!,
-			
-			
-			//buttons
-			backButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -48),
-			backButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 48),
-			backButton.heightAnchor.constraint(equalToConstant: 54),
-			backButton.widthAnchor.constraint(equalToConstant: 54),
-			
-			doneButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -48),
-			doneButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -48),
-			doneButton.heightAnchor.constraint(equalToConstant: 54),
-			doneButton.widthAnchor.constraint(equalToConstant: 54)
-			
 		].activate()
 	}
 	
