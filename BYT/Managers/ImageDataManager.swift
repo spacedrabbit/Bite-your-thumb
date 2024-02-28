@@ -56,7 +56,8 @@ final class ImageDataManager: ObservableObject {
 				// Something went wrong, let's retry it all
 				
 				print("Hm, we have some images but not all of them were cached. Restarting the process")
-				clearImages() //  note this is being done asynchronously.. i shuold probably kick off the download after this finishes. probably fine with the small size of images total
+				//  note this is being done asynchronously.. i shuold probably kick off the download after this finishes. probably fine with the small size of images total
+				clearImages()
 				downloadImages(count: Self.defaultDownloadSize)
 				return
 			}

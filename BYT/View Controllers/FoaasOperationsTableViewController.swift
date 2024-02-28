@@ -41,6 +41,7 @@ class FoaasOperationCollectionViewController: UICollectionViewController, FoaasV
 	override init(collectionViewLayout: UICollectionViewLayout = UICollectionViewFlowLayout()) {
 		super.init(collectionViewLayout: collectionViewLayout)
 		self.collectionView.refreshControl = refreshControl
+		self.collectionView.delaysContentTouches = false
 
 		self.collectionView.collectionViewLayout = generateLayout()
 		self.collectionView.register(FoaasOperationCollectionViewCell.self, forCellWithReuseIdentifier: Identifiers.foaasOperationCell)
@@ -68,6 +69,7 @@ class FoaasOperationCollectionViewController: UICollectionViewController, FoaasV
 			do {
 				
 				let result = try await FoaasService.getOpsSDK()
+				
 				self.items = result.map({ Item.operation($0) })
 				self.collectionView.reloadData()
 				
@@ -136,12 +138,44 @@ extension FoaasOperationCollectionViewController: UICollectionViewDelegateFlowLa
 
 fileprivate class FoaasOperationCollectionViewCell: UICollectionViewCell {
 	
+	// I think I like it better just on highlight
+//	override var isSelected: Bool {
+//		didSet {
+//			if isSelected || isHighlighted {
+//				UIView.animate(withDuration: 0.15, delay: 0.0, options: [.beginFromCurrentState]) {
+//					self.animatedContainer.transform = CGAffineTransform.identity.concatenating(CGAffineTransform(scaleX: 0.92, y: 0.92))
+//				}
+//			} else {
+//				UIView.animate(withDuration: 0.15, delay: 0.0, options: [.beginFromCurrentState]) {
+//					self.animatedContainer.transform = .identity
+//				}
+//			}
+//		}
+//	}
+	
+	override var isHighlighted: Bool {
+		didSet {
+			if isHighlighted {
+				UIView.animate(withDuration: 0.15, delay: 0.0, options: [.beginFromCurrentState]) {
+					self.animatedContainer.transform = CGAffineTransform.identity.concatenating(CGAffineTransform(scaleX: 0.92, y: 0.92))
+				}
+			} else {
+				UIView.animate(withDuration: 0.15, delay: 0.0, options: [.beginFromCurrentState]) {
+					self.animatedContainer.transform = .identity
+				}
+			}
+		}
+	}
+	
 	@Published var operation: FoaasOperation?
 	@Published var previewImage: UpsplashImage?
+	
 	private var cancellables: Set<AnyCancellable> = []
 	
+	private var animatedContainer = UIView()
+	
 	private let effectsView: UIVisualEffectView = {
-		let effect = UIBlurEffect(style: .systemThinMaterial)
+		let effect = UIBlurEffect(style: .light)
 		
 		let view = UIVisualEffectView(effect: effect)
 		
@@ -156,15 +190,18 @@ fileprivate class FoaasOperationCollectionViewCell: UICollectionViewCell {
 	
 	private let titleLabel: UILabel = {
 		let label = UILabel()
-		label.textColor = .black
-		label.font = UIFont.systemFont(ofSize: 16.0)
+		label.textColor = .white
+		label.textAlignment = .center
+		label.font = UIFont.systemFont(ofSize: 24.0, weight: .medium)
 		return label
 	}()
 	
 	override init(frame: CGRect) {
 		super.init(frame: .zero)
-		self.contentView.clipsToBounds = true
-		self.contentView.layer.cornerRadius = 10.0
+		animatedContainer.clipsToBounds = true
+		animatedContainer.layer.cornerRadius = 10.0
+		effectsView.layer.cornerRadius = 4.0
+		effectsView.clipsToBounds = true
 		
 		$operation
 			.compactMap{ $0 }
@@ -180,26 +217,32 @@ fileprivate class FoaasOperationCollectionViewCell: UICollectionViewCell {
 				self.imagePreview.setImage(with: image.urls.small)
 			}.store(in: &cancellables)
 		
-		self.contentView.addSubview(imagePreview)
-		self.contentView.addSubview(effectsView)
-		self.contentView.addSubview(titleLabel)
+		self.contentView.addSubview(animatedContainer)
+		animatedContainer.addSubview(imagePreview)
+		animatedContainer.addSubview(effectsView)
+		animatedContainer.addSubview(titleLabel)
 		
-		stripAutoResizingMasks(effectsView, imagePreview, titleLabel)
+		stripAutoResizingMasks(animatedContainer, effectsView, imagePreview, titleLabel)
 		
 		NSLayoutConstraint.activate([
-			effectsView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor),
-			effectsView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor),
-			effectsView.topAnchor.constraint(equalTo: self.contentView.topAnchor),
-			effectsView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor),
+			animatedContainer.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor),
+			animatedContainer.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor),
+			animatedContainer.topAnchor.constraint(equalTo: self.contentView.topAnchor),
+			animatedContainer.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor),
+			
+			effectsView.leadingAnchor.constraint(equalTo: animatedContainer.leadingAnchor, constant: 12.0),
+			effectsView.trailingAnchor.constraint(equalTo: animatedContainer.trailingAnchor,constant: -12.0),
+			effectsView.topAnchor.constraint(equalTo: titleLabel.topAnchor, constant: -12.0),
+			effectsView.bottomAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12.0),
 	
-			imagePreview.topAnchor.constraint(equalTo: self.contentView.topAnchor),
-			imagePreview.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor),
-			imagePreview.widthAnchor.constraint(equalTo: self.contentView.widthAnchor),
-			imagePreview.heightAnchor.constraint(equalTo: self.contentView.heightAnchor),
+			imagePreview.topAnchor.constraint(equalTo: animatedContainer.topAnchor),
+			imagePreview.leadingAnchor.constraint(equalTo: animatedContainer.leadingAnchor),
+			imagePreview.widthAnchor.constraint(equalTo: animatedContainer.widthAnchor),
+			imagePreview.heightAnchor.constraint(equalTo: animatedContainer.heightAnchor),
 
-			titleLabel.centerXAnchor.constraint(equalTo: self.contentView.centerXAnchor),
-			titleLabel.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
-			titleLabel.widthAnchor.constraint(equalTo: self.contentView.widthAnchor, multiplier: 0.9),
+			titleLabel.centerXAnchor.constraint(equalTo: animatedContainer.centerXAnchor),
+			titleLabel.centerYAnchor.constraint(equalTo: animatedContainer.centerYAnchor),
+			titleLabel.widthAnchor.constraint(equalTo: animatedContainer.widthAnchor, multiplier: 0.86),
 		])
 	}
 	
