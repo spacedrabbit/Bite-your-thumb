@@ -25,6 +25,7 @@
 		1498A3071E3E5602003A3E5C /* FoaasSettingsMenuView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1498A3051E3E5602003A3E5C /* FoaasSettingsMenuView.xib */; };
 		14CD3A942B8FA43F001C3FB8 /* ConstraintsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CD3A932B8FA43F001C3FB8 /* ConstraintsHelper.swift */; };
 		14CD3A962B8FCB50001C3FB8 /* KeyboardNotificationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CD3A952B8FCB50001C3FB8 /* KeyboardNotificationContext.swift */; };
+		14CD3A982B911532001C3FB8 /* NSLayoutConstraint+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CD3A972B911532001C3FB8 /* NSLayoutConstraint+Extensions.swift */; };
 		14CFEBF41E3430C600BD46CF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14CFEBF21E3430C600BD46CF /* LaunchScreen.storyboard */; };
 		14CFEBFF1E3431F700BD46CF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CFEBFC1E3431F700BD46CF /* AppDelegate.swift */; };
 		14CFEC001E3431F700BD46CF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14CFEBFD1E3431F700BD46CF /* Assets.xcassets */; };
@@ -96,6 +97,7 @@
 		1498A3051E3E5602003A3E5C /* FoaasSettingsMenuView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = FoaasSettingsMenuView.xib; path = Views/FoaasSettingsMenuView.xib; sourceTree = "<group>"; };
 		14CD3A932B8FA43F001C3FB8 /* ConstraintsHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ConstraintsHelper.swift; path = Utility/ConstraintsHelper.swift; sourceTree = "<group>"; };
 		14CD3A952B8FCB50001C3FB8 /* KeyboardNotificationContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = KeyboardNotificationContext.swift; path = Utility/KeyboardNotificationContext.swift; sourceTree = "<group>"; };
+		14CD3A972B911532001C3FB8 /* NSLayoutConstraint+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "NSLayoutConstraint+Extensions.swift"; path = "Utility/NSLayoutConstraint+Extensions.swift"; sourceTree = "<group>"; };
 		14CFEBE61E3430C600BD46CF /* BYT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BYT.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		14CFEBF31E3430C600BD46CF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		14CFEBFC1E3431F700BD46CF /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -315,6 +317,7 @@
 				14040F202B7D566900B31C02 /* LRUCache.swift */,
 				14CD3A932B8FA43F001C3FB8 /* ConstraintsHelper.swift */,
 				14CD3A952B8FCB50001C3FB8 /* KeyboardNotificationContext.swift */,
+				14CD3A972B911532001C3FB8 /* NSLayoutConstraint+Extensions.swift */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -459,6 +462,7 @@
 				1414165C2B7A90FA002F593E /* FoaasSession.swift in Sources */,
 				14CFEC161E34363300BD46CF /* FoaasTemplate.swift in Sources */,
 				81DBD7651E4B390200BCF0CC /* FoaasAboutViewController.swift in Sources */,
+				14CD3A982B911532001C3FB8 /* NSLayoutConstraint+Extensions.swift in Sources */,
 				14E09D9F2B79951700E36A45 /* ImageView.swift in Sources */,
 				14CFEC1A1E34394D00BD46CF /* FoaasDataManager.swift in Sources */,
 				1498A2FD1E3D7A4F003A3E5C /* FoaasColorPickerView.swift in Sources */,
