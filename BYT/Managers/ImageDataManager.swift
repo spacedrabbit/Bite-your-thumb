@@ -46,7 +46,7 @@ final class ImageDataManager: ObservableObject {
 		shared.loadImages()
 	}
 	
-	private func loadImages() {
+	private func loadImages(cacheBlurhash: Bool = false) {
 		print("Image loading has begun...")
 		let loadedImages = loadData()
 		
@@ -69,6 +69,7 @@ final class ImageDataManager: ObservableObject {
 			print("We have cached images, and we're all set!")
 			cachedImages = loadedImages
 			
+			guard cacheBlurhash else { return }
 			DispatchQueue.global().async {
 				for image in self.cachedImages {
 					if !ImageCache.default.memoryStorage.isCached(forKey: image.id) {

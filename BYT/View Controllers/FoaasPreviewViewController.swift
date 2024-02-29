@@ -18,7 +18,7 @@ class CreateBiteViewController: UIViewController, FoaasViewController {
 	
 	private let foaasSubject: PassthroughSubject<Foaas, Never> = PassthroughSubject()
 	private let imageSubject: PassthroughSubject<UpsplashImage, Never> = PassthroughSubject()
-	
+
 	private let preview = EditBiteView()
 	private let blurHashBackground = UIImageView()
 	
@@ -56,21 +56,13 @@ class CreateBiteViewController: UIViewController, FoaasViewController {
 		
 		self.blurHashBackground.alpha = 0.0
 		imageSubject
-			.receive(on: DispatchQueue.global())
-			.flatMap { upsplashImage in
-				return ImageDataManager
-					.getBlurHashImage(for: upsplashImage.id)
-					.compactMap({ $0 })
-					.receive(on: DispatchQueue.main)
-					.eraseToAnyPublisher()
-			}
+			.receive(on: DispatchQueue.main)
 			.sink { [weak self] image in
-				self?.blurHashBackground.image = image
+				self?.blurHashBackground.image = UIImage(blurHash: image.blurHash, size: CGSize(width: 50, height: 125))
 				UIView.animate(withDuration: 0.25) {
 					self?.blurHashBackground.alpha = 1.0
 				}
-			}
-			.store(in: &bag)
+			}.store(in: &bag)
 	}
 	
 	required init?(coder: NSCoder) {
