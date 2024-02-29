@@ -44,6 +44,8 @@ class EditBiteView: UIView {
 		textView.font = UIFont.Roboto.light(size: 24.0)
 		textView.textColor = .white
 		textView.isEditable = false
+		textView.isScrollEnabled = false
+		textView.backgroundColor = .clear
 		
 		return textView
 	}()
@@ -58,7 +60,7 @@ class EditBiteView: UIView {
 		
 		self.addSubview(contentView)
 		contentView.addSubview(backgroundImage)
-		contentView.addSubview(previewLabel)
+		contentView.addSubview(previewTextView)
 		
 		configureConstraints()
 		
@@ -66,7 +68,7 @@ class EditBiteView: UIView {
 			.dropFirst(1)
 			.receive(on: DispatchQueue.main)
 			.sink(receiveValue: { new in
-				self.previewLabel.text = new.description
+				self.previewTextView.text = new.description
 				self.layoutIfNeeded()
 			}).store(in: &bag)
 		
@@ -85,31 +87,21 @@ class EditBiteView: UIView {
 	}
 	
 	private func configureConstraints() {
-		stripAutoResizingMasks([self, contentView, backgroundImage, previewLabel])
+		stripAutoResizingMasks([self, contentView, backgroundImage, previewTextView])
+		previewTextView.setContentHuggingPriority(UILayoutPriority(991.0), for: .vertical)
+		
 		backgroundImage.constrainBounds(to: contentView).activate()
-		
-		previewLabel.setContentCompressionResistancePriority(.required, for: .vertical)
-		
-		let contentTargetHeight = contentView.heightAnchor.constraint(greaterThanOrEqualTo: previewLabel.heightAnchor, constant: 20.0)
-		contentTargetHeight.priority = UILayoutPriority(rawValue: 999.0)
-		
-		let contentMinimumHeight = contentView.heightAnchor.constraint(equalTo: previewLabel.heightAnchor, constant: 80.0)
-		contentMinimumHeight.priority = UILayoutPriority(rawValue: 990.0)
-		let contentIdealHeight = contentView.heightAnchor.constraint(equalTo: previewLabel.heightAnchor, constant: 20.0)
-		contentIdealHeight.priority = UILayoutPriority(rawValue: 995.0)
-		
 		[
-			contentView.widthAnchor.constraint(equalTo: self.widthAnchor, constant: -20.0),
-			contentView.heightAnchor.constraint(equalTo: self.heightAnchor, constant: -20.0),
-			contentView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-			contentView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+			contentView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10.0),
+			contentView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10.0),
+			contentView.topAnchor.constraint(equalTo: self.topAnchor, constant: 10.0),
+			contentView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10.0),
 			
-			previewLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-			previewLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-			previewLabel.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.88),
-			
-			contentIdealHeight,
-			contentMinimumHeight,
+			previewTextView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10.0),
+			previewTextView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10.0),
+			previewTextView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10.0),
+			previewTextView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10.0),
+			previewTextView.heightAnchor.constraint(equalToConstant: 400.0).withPriority(UILayoutPriority(990.0))
 		].activate()
 	}
 }

@@ -109,17 +109,28 @@ class CreateBiteViewController: UIViewController, FoaasViewController {
 		}
 	}
 	
+	
+	
 	// MARK: - Layout
 	
 	private func configureConstraints() {
 		stripAutoResizingMasks([preview, blurHashBackground])
 		blurHashBackground.constrainBounds(to: self.view).activate()
 		
+		let layoutGuide = UILayoutGuide()
+		self.view.addLayoutGuide(layoutGuide)
+		
 		[
-			preview.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
-			preview.heightAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.heightAnchor, constant: -foaasNavigationBar.h),
-			preview.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-			preview.widthAnchor.constraint(equalTo: self.view.widthAnchor),
+			layoutGuide.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
+			layoutGuide.heightAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.heightAnchor, constant: -foaasNavigationBar.h),
+			layoutGuide.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+			layoutGuide.widthAnchor.constraint(equalTo: self.view.widthAnchor),
+			
+			preview.heightAnchor.constraint(equalTo: layoutGuide.heightAnchor).withPriority(.defaultHigh),
+			preview.heightAnchor.constraint(lessThanOrEqualTo: layoutGuide.heightAnchor),
+			preview.widthAnchor.constraint(equalTo: layoutGuide.widthAnchor),
+			preview.centerXAnchor.constraint(equalTo: layoutGuide.centerXAnchor),
+			preview.centerYAnchor.constraint(equalTo: layoutGuide.centerYAnchor),
 		].activate()
 	}
 	
