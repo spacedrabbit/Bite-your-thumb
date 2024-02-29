@@ -79,20 +79,32 @@ final class ImageDataManager: ObservableObject {
 		}
 	}
 	
-	func preloadBlurHashImage(from image: UpsplashImage) {
+	/// Kicks off a Future to create the blurhash image using the hashed value in an UpsplashImage
+	/// Stores the result to disk for future uses
+	private func preloadBlurHashImage(from image: UpsplashImage) {
 		BlurHashHelper.start(image.blurHash, size: CGSize(width: 275.0, height: 450.0))
 			.receive(on: DispatchQueue.global())
 			.sink(receiveCompletion: { _ in
 				
 			}, receiveValue: { value in
-				print("Storing value for id: \(image.id)")
-				ImageCache.default.memoryStorage.store(value: value, forKey: image.id)
+				ImageCache.default.store(value, forKey: image.id, toDisk: true)
 			}).store(in: &bag)
 	}
 	
 	static func getBlurHashImage(for id: String) -> AnyPublisher<UIImage?, Never> {
-		if ImageCache.default.memoryStorage.isCached(forKey: id) {
-			return Just(ImageCache.default.memoryStorage.value(forKey: id)).eraseToAnyPublisher()
+		if ImageCache.default.diskStorage.isCached(forKey: id) {
+
+			return Future<UIImage?, Never> { promise in
+				ImageCache.default.retrieveImageInDiskCache(forKey: id) { result in
+					switch result {
+					case .success(let optImage):
+						promise(.success(optImage))
+					case .failure:
+						promise(.success(nil))
+					}
+				}
+			}.eraseToAnyPublisher()
+			
 		} else {
 			let future: AnyPublisher<UIImage?, Never> = Future<UpsplashImage?, BlurHashingError> { promise in
 				Task {

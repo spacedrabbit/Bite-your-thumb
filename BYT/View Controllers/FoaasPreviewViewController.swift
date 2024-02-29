@@ -49,35 +49,32 @@ class CreateBiteViewController: UIViewController, FoaasViewController {
 		foaasSubject
 			.combineLatest(imageSubject)
 			.receive(on: DispatchQueue.main)
-			.sink { [unowned self] (foaas, image) in
-				self.preview.foaasSubject.send(foaas)
-				self.preview.imageSubject.send(image)
+			.sink { [weak self] (foaas, image) in
+				self?.preview.foaasSubject.send(foaas)
+				self?.preview.imageSubject.send(image)
 			}.store(in: &bag)
 		
 		self.blurHashBackground.alpha = 0.0
 		imageSubject
 			.receive(on: DispatchQueue.global())
-			.sink(receiveValue: { [unowned self] value in
-				ImageDataManager
-					.getBlurHashImage(for: value.id)
+			.flatMap { upsplashImage in
+				return ImageDataManager
+					.getBlurHashImage(for: upsplashImage.id)
 					.compactMap({ $0 })
 					.receive(on: DispatchQueue.main)
-					.sink { [weak self] image in
-						self?.blurHashBackground.image = image
-						UIView.animate(withDuration: 0.25) {
-							self?.blurHashBackground.alpha = 1.0
-						}
-					}.store(in: &self.bag)
-			})
+					.eraseToAnyPublisher()
+			}
+			.sink { [weak self] image in
+				self?.blurHashBackground.image = image
+				UIView.animate(withDuration: 0.25) {
+					self?.blurHashBackground.alpha = 1.0
+				}
+			}
 			.store(in: &bag)
 	}
 	
 	required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
-	}
-	
-	deinit {
-		print("Deinit!")
 	}
 	
 	// MARK: - View Lifecycle
