@@ -20,6 +20,7 @@ class CreateBiteViewController: UIViewController, FoaasViewController {
 	private let imageSubject: PassthroughSubject<UpsplashImage, Never> = PassthroughSubject()
 	
 	private let preview = EditBiteView()
+	private let blurHashBackground = UIImageView()
 	
 	private var bag: Set<AnyCancellable> = []
 	
@@ -48,20 +49,42 @@ class CreateBiteViewController: UIViewController, FoaasViewController {
 		foaasSubject
 			.combineLatest(imageSubject)
 			.receive(on: DispatchQueue.main)
-			.sink { (foaas, image) in
+			.sink { [unowned self] (foaas, image) in
 				self.preview.foaasSubject.send(foaas)
 				self.preview.imageSubject.send(image)
 			}.store(in: &bag)
+		
+		self.blurHashBackground.alpha = 0.0
+		imageSubject
+			.receive(on: DispatchQueue.global())
+			.sink(receiveValue: { [unowned self] value in
+				ImageDataManager
+					.getBlurHashImage(for: value.id)
+					.compactMap({ $0 })
+					.receive(on: DispatchQueue.main)
+					.sink { [weak self] image in
+						self?.blurHashBackground.image = image
+						UIView.animate(withDuration: 0.25) {
+							self?.blurHashBackground.alpha = 1.0
+						}
+					}.store(in: &self.bag)
+			})
+			.store(in: &bag)
 	}
 	
 	required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
 	
+	deinit {
+		print("Deinit!")
+	}
+	
 	// MARK: - View Lifecycle
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		self.view.addSubview(blurHashBackground)
 		self.view.addSubview(preview)
 		configureConstraints()
 		reload()
@@ -100,7 +123,9 @@ class CreateBiteViewController: UIViewController, FoaasViewController {
 	// MARK: - Layout
 	
 	private func configureConstraints() {
-		preview.translatesAutoresizingMaskIntoConstraints = false
+		stripAutoResizingMasks([preview, blurHashBackground])
+		blurHashBackground.constrainBounds(to: self.view).activate()
+		
 		[
 			preview.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
 			preview.heightAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.heightAnchor, constant: -foaasNavigationBar.h),

@@ -25,6 +25,8 @@ final class ImageDataManager: ObservableObject {
 		}
 	}
 	
+	private(set) var blurHashedImages: [String : UIImage] = [:]
+	
 	private var screen: UIScreen {
 		DispatchQueue.main.sync {
 			return ScenePeeker.shared.rootWindow?.screen ?? UIScreen()
@@ -36,13 +38,15 @@ final class ImageDataManager: ObservableObject {
 		return cachedImagePublisher.eraseToAnyPublisher()
 	}
 	
+	private var bag: Set<AnyCancellable> = []
+	
 	private init() {}
 	
 	static func initialize() {
 		shared.loadImages()
 	}
 	
-	 private func loadImages() {
+	private func loadImages() {
 		print("Image loading has begun...")
 		let loadedImages = loadData()
 		
@@ -64,6 +68,56 @@ final class ImageDataManager: ObservableObject {
 			
 			print("We have cached images, and we're all set!")
 			cachedImages = loadedImages
+			
+			DispatchQueue.global().async {
+				for image in self.cachedImages {
+					if !ImageCache.default.memoryStorage.isCached(forKey: image.id) {
+						self.preloadBlurHashImage(from: image)
+					}
+				}
+			}
+		}
+	}
+	
+	func preloadBlurHashImage(from image: UpsplashImage) {
+		BlurHashHelper.start(image.blurHash, size: CGSize(width: 275.0, height: 450.0))
+			.receive(on: DispatchQueue.global())
+			.sink(receiveCompletion: { _ in
+				
+			}, receiveValue: { value in
+				print("Storing value for id: \(image.id)")
+				ImageCache.default.memoryStorage.store(value: value, forKey: image.id)
+			}).store(in: &bag)
+	}
+	
+	static func getBlurHashImage(for id: String) -> AnyPublisher<UIImage?, Never> {
+		if ImageCache.default.memoryStorage.isCached(forKey: id) {
+			return Just(ImageCache.default.memoryStorage.value(forKey: id)).eraseToAnyPublisher()
+		} else {
+			let future: AnyPublisher<UIImage?, Never> = Future<UpsplashImage?, BlurHashingError> { promise in
+				Task {
+					let result = await getRandomImage()
+					if let r = result {
+						promise(.success(r))
+					} else {
+						promise(.failure(BlurHashingError()))
+					}
+				}
+			}
+			.replaceError(with: nil)
+			.compactMap({ $0 })
+			.flatMap({ (upsplashImage) -> AnyPublisher<UIImage?, Never> in
+				return BlurHashHelper.start(upsplashImage.blurHash, size: CGSize(width: 275.0, height: 450.0))
+					.map({
+						ImageCache.default.memoryStorage.store(value: $0, forKey: id)
+						return Optional.init($0)
+					})
+					.replaceError(with: nil)
+					.eraseToAnyPublisher()
+			})
+			.eraseToAnyPublisher()
+			
+			return future
 		}
 	}
 	
@@ -71,6 +125,7 @@ final class ImageDataManager: ObservableObject {
 		if shared.cachedImages.count > 0 {
 			print("Returning random image from cache")
 			return shared.cachedImages.randomElement()
+			
 		} else {
 			print("Returning random image from network service")
 			let result = try? await UpsplashService.getRandomImage(size: shared.screen.bounds.size, scale: shared.screen.scale)

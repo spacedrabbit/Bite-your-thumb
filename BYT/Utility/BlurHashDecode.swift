@@ -8,8 +8,28 @@
 
 // From: https://github.com/woltapp/blurhash/tree/master/Swift
 import UIKit
+import Combine
+
+struct BlurHashingError: Error {
+	
+}
+
+final class BlurHashHelper {
+	
+	static func start(_ hash: String, size: CGSize) -> Future<UIImage, BlurHashingError> {
+		return Future { promise in
+			if let image = UIImage.init(blurHash: hash, size: size) {
+				promise(.success(image))
+			} else {
+				promise(.failure(BlurHashingError()))
+			}
+		}
+	}
+	
+}
 
 extension UIImage {
+	
 	public convenience init?(blurHash: String, size: CGSize, punch: Float = 1) {
 		guard blurHash.count >= 6 else { return nil }
 
