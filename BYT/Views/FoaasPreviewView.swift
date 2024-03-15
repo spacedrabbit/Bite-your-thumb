@@ -10,7 +10,21 @@ import UIKit
 import Kingfisher
 import Combine
 
-class EditBiteView: UIView {
+class EditBiteView: UIButton {
+	
+	override var isHighlighted: Bool {
+		didSet {
+			if isHighlighted {
+				UIView.animate(withDuration: 0.20, delay: 0.0, options: [.beginFromCurrentState, .curveEaseOut]) {
+					self.contentView.transform = CGAffineTransform.identity.concatenating(.init(scaleX: 0.93, y: 0.93))
+				}
+			} else {
+				UIView.animate(withDuration: 0.15, delay: 0.0, options: [.beginFromCurrentState, .curveEaseOut]) {
+					self.contentView.transform = CGAffineTransform.identity
+				}
+			}
+		}
+	}
 	
 	private var contentView: UIView = {
 		let view = UIView()
@@ -21,6 +35,8 @@ class EditBiteView: UIView {
 		view.layer.shadowColor = UIColor.black.withAlphaComponent(0.6).cgColor
 		view.layer.shadowRadius = 6.0
 		view.layer.shadowOffset = CGSize(width: 0.0, height: 6.0)
+		view.isUserInteractionEnabled = false
+		
 		return view
 	}()
 	
@@ -99,12 +115,60 @@ class EditBiteView: UIView {
 			
 			previewTextView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10.0),
 			previewTextView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10.0),
-			previewTextView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10.0),
-			previewTextView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10.0),
-			previewTextView.heightAnchor.constraint(equalToConstant: 400.0).withPriority(UILayoutPriority(990.0))
+			previewTextView.heightAnchor.constraint(lessThanOrEqualTo: contentView.heightAnchor, constant: -20.0),
+			previewTextView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+			
+//			previewTextView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10.0),
+//			previewTextView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10.0),
+//			previewTextView.heightAnchor.constraint(equalToConstant: 400.0).withPriority(UILayoutPriority(990.0))
 		].activate()
 	}
 }
+
+/*
+ import UIKit
+ import Foundation
+ 
+ for later
+
+ class ViewController: UIViewController, UITextViewDelegate {
+
+	 override func viewDidLoad() {
+		 super.viewDidLoad()
+		 
+		 let textView = UITextView(frame: CGRect(x: 20, y: 100, width: view.bounds.width - 40, height: 400))
+		 textView.delegate = self
+		 view.addSubview(textView)
+		 
+		 // Ensure the text view looks like a label
+		 textView.isEditable = false
+		 textView.isScrollEnabled = false
+		 textView.backgroundColor = .clear
+		 
+		 // Create the attributed string
+		 let attributedString = NSMutableAttributedString(string: "Here is a link to OpenAI's website.")
+		 
+		 // Add attributes for the hyperlink
+		 if let url = URL(string: "https://www.openai.com") {
+			 attributedString.setAttributes([.link: url], range: NSRange(location: 17, length: 4))
+		 }
+		 
+		 textView.attributedText = attributedString
+		 
+		 // Optional: Disable text selection
+		 textView.isUserInteractionEnabled = true
+		 textView.isSelectable = true
+	 }
+	 
+	 // UITextViewDelegate method to handle hyperlink taps
+	 func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+		 UIApplication.shared.open(URL)
+		 return false
+	 }
+ }
+
+ */
+
 
 protocol FoaasPrevewViewDelegate {
 	func backButtonPressed()

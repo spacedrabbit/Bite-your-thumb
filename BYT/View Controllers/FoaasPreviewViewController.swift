@@ -1,6 +1,6 @@
 
 //
-//  FoaasPreviewViewController.swift
+//  CreateBiteViewController.swift
 //  BYT
 //
 //  Created by Louis Tur on 1/23/17.
@@ -126,8 +126,9 @@ class CreateBiteViewController: UIViewController, FoaasViewController {
 			layoutGuide.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
 			layoutGuide.widthAnchor.constraint(equalTo: self.view.widthAnchor),
 			
-			preview.heightAnchor.constraint(equalTo: layoutGuide.heightAnchor).withPriority(.defaultHigh),
-			preview.heightAnchor.constraint(lessThanOrEqualTo: layoutGuide.heightAnchor),
+			preview.heightAnchor.constraint(greaterThanOrEqualToConstant: 350.0).withPriority(.init(991.0)),
+			preview.heightAnchor.constraint(equalToConstant: 350.0).withPriority(.init(991.0)),
+			preview.heightAnchor.constraint(lessThanOrEqualTo: layoutGuide.heightAnchor).withPriority(.init(990.0)),
 			preview.widthAnchor.constraint(equalTo: layoutGuide.widthAnchor),
 			preview.centerXAnchor.constraint(equalTo: layoutGuide.centerXAnchor),
 			preview.centerYAnchor.constraint(equalTo: layoutGuide.centerYAnchor),
