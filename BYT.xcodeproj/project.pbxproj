@@ -41,10 +41,10 @@
 		14CFEC421E3705E800BD46CF /* FoaasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CFEC411E3705E800BD46CF /* FoaasView.swift */; };
 		14CFEC441E3707C600BD46CF /* FoaasOperationsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CFEC431E3707C600BD46CF /* FoaasOperationsTableViewController.swift */; };
 		14CFEC461E37083400BD46CF /* FoaasOperationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CFEC451E37083400BD46CF /* FoaasOperationTableViewCell.swift */; };
-		14CFEC481E37088A00BD46CF /* FoaasPreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CFEC471E37088A00BD46CF /* FoaasPreviewViewController.swift */; };
+		14CFEC481E37088A00BD46CF /* CreateBiteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CFEC471E37088A00BD46CF /* CreateBiteViewController.swift */; };
 		14CFEC4A1E3708C300BD46CF /* FoaasTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CFEC491E3708C300BD46CF /* FoaasTextField.swift */; };
 		14CFEC4C1E3709A700BD46CF /* FoaasNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CFEC4B1E3709A700BD46CF /* FoaasNavigationController.swift */; };
-		14CFEC4E1E37E86700BD46CF /* FoaasPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CFEC4D1E37E86700BD46CF /* FoaasPreviewView.swift */; };
+		14CFEC4E1E37E86700BD46CF /* EditBiteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CFEC4D1E37E86700BD46CF /* EditBiteView.swift */; };
 		14E09D942B783F9200E36A45 /* BlurHashDecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E09D932B783F9200E36A45 /* BlurHashDecode.swift */; };
 		14E09D962B78400D00E36A45 /* UpsplashService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E09D952B78400D00E36A45 /* UpsplashService.swift */; };
 		14E09D9A2B78523500E36A45 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E09D992B78523500E36A45 /* SceneDelegate.swift */; };
@@ -115,10 +115,10 @@
 		14CFEC411E3705E800BD46CF /* FoaasView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoaasView.swift; path = Views/FoaasView.swift; sourceTree = "<group>"; };
 		14CFEC431E3707C600BD46CF /* FoaasOperationsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoaasOperationsTableViewController.swift; path = "View Controllers/FoaasOperationsTableViewController.swift"; sourceTree = "<group>"; };
 		14CFEC451E37083400BD46CF /* FoaasOperationTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoaasOperationTableViewCell.swift; path = Views/FoaasOperationTableViewCell.swift; sourceTree = "<group>"; };
-		14CFEC471E37088A00BD46CF /* FoaasPreviewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoaasPreviewViewController.swift; path = "View Controllers/FoaasPreviewViewController.swift"; sourceTree = "<group>"; };
+		14CFEC471E37088A00BD46CF /* CreateBiteViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CreateBiteViewController.swift; path = "View Controllers/CreateBiteViewController.swift"; sourceTree = "<group>"; };
 		14CFEC491E3708C300BD46CF /* FoaasTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoaasTextField.swift; path = Views/FoaasTextField.swift; sourceTree = "<group>"; };
 		14CFEC4B1E3709A700BD46CF /* FoaasNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoaasNavigationController.swift; path = "View Controllers/FoaasNavigationController.swift"; sourceTree = "<group>"; };
-		14CFEC4D1E37E86700BD46CF /* FoaasPreviewView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoaasPreviewView.swift; path = Views/FoaasPreviewView.swift; sourceTree = "<group>"; };
+		14CFEC4D1E37E86700BD46CF /* EditBiteView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EditBiteView.swift; path = Views/EditBiteView.swift; sourceTree = "<group>"; };
 		14E09D932B783F9200E36A45 /* BlurHashDecode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BlurHashDecode.swift; path = Utility/BlurHashDecode.swift; sourceTree = "<group>"; };
 		14E09D952B78400D00E36A45 /* UpsplashService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpsplashService.swift; sourceTree = "<group>"; };
 		14E09D982B78435500E36A45 /* LouisSDK */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = LouisSDK; path = ../../Swift/LouisSDK/LouisSDK; sourceTree = "<group>"; };
@@ -258,7 +258,7 @@
 				81661B421E4960660044756A /* FoaasTeamMemberView.swift */,
 				14CFEC451E37083400BD46CF /* FoaasOperationTableViewCell.swift */,
 				14CFEC491E3708C300BD46CF /* FoaasTextField.swift */,
-				14CFEC4D1E37E86700BD46CF /* FoaasPreviewView.swift */,
+				14CFEC4D1E37E86700BD46CF /* EditBiteView.swift */,
 				1498A2FC1E3D7A4F003A3E5C /* FoaasColorPickerView.swift */,
 				1408CAA01E494B1100AFC1AA /* FoaasColorView.swift */,
 			);
@@ -301,7 +301,7 @@
 				81DBD7641E4B390200BCF0CC /* FoaasAboutViewController.swift */,
 				14CFEC3F1E3705AC00BD46CF /* HomeViewController.swift */,
 				14CFEC431E3707C600BD46CF /* FoaasOperationsTableViewController.swift */,
-				14CFEC471E37088A00BD46CF /* FoaasPreviewViewController.swift */,
+				14CFEC471E37088A00BD46CF /* CreateBiteViewController.swift */,
 				14CFEC4B1E3709A700BD46CF /* FoaasNavigationController.swift */,
 			);
 			name = "View Controllers";
@@ -498,8 +498,8 @@
 				812EAE871E42312D003CAE18 /* Extension + LanguageFilterManager.swift in Sources */,
 				14E09D962B78400D00E36A45 /* UpsplashService.swift in Sources */,
 				14CFEBFF1E3431F700BD46CF /* AppDelegate.swift in Sources */,
-				14CFEC481E37088A00BD46CF /* FoaasPreviewViewController.swift in Sources */,
-				14CFEC4E1E37E86700BD46CF /* FoaasPreviewView.swift in Sources */,
+				14CFEC481E37088A00BD46CF /* CreateBiteViewController.swift in Sources */,
+				14CFEC4E1E37E86700BD46CF /* EditBiteView.swift in Sources */,
 				14CFEC191E34394D00BD46CF /* FoaasService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

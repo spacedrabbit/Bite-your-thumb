@@ -54,7 +54,7 @@ class CreateBiteViewController: UIViewController, FoaasViewController {
 				self?.preview.imageSubject.send(image)
 			}.store(in: &bag)
 		
-		self.blurHashBackground.alpha = 0.0
+		blurHashBackground.alpha = 0.0
 		imageSubject
 			.receive(on: DispatchQueue.main)
 			.sink { [weak self] image in
