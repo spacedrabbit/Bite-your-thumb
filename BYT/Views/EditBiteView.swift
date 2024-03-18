@@ -18,8 +18,7 @@ struct Bite: Identifiable {
 		self.id = operation.displayName
 		self.name = operation.name
 		self.url = operation.url
-		
-		
+		self.components = []
 	}
 }
 

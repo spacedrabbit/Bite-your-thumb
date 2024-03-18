@@ -12,6 +12,8 @@ import Combine
 
 class Template {
 	
+	/// A `Token` represents some slice of the overall message. The token is either part of the
+	/// template message, or it's one of the replacement fields.
 	struct Token: Identifiable {
 		let id: String
 		let source: FoaasField?
@@ -46,8 +48,20 @@ class Template {
 	private var templateSubtitle: String = ""
 	private var templatedFields: [String : String] = [:]
 	
-	private var tokens: [Token] = []
-
+	var tokens: [Token] = []
+	
+	/**
+	 The URL is really the path components to be used. An example we'd see from the api looks like
+	 `/bus/:name/:from/`. We're going to make the assumption that the 0th path component will always
+	 be the identifier for the operation, and the nth component will always be the "from" field"
+	 
+	 With respect to ordering, we're also going to make the assumption that the keyed components
+	 will always be returned in the order that they will appear in the message & subtitle.
+	 */
+	private var orderedKeys: [String] {
+		return Array(operation.url.components(separatedBy: "/").filter({ !$0.isEmpty })[1...])
+	}
+	
 	init(operation: FoaasOperation) {
 		self.operation = operation
 		for field in self.operation.fields {
@@ -63,42 +77,36 @@ class Template {
 	private func makeTemplate() {
 		guard !source.message.isEmpty, !source.subtitle.isEmpty else { return }
 		
-		for field in operation.fields {
-			templatedFields[field.key] = field.name
-			
-			if let locatedRange = source.message.firstRange(of: field.name) {
-				templateMessage = source
-					.message
-					.replacingOccurrences(of: field.name,
-										  with: keyed(field.key),
-										  options: [],
-										  range: locatedRange)
+		var fullMessage = source.message + " " + source.subtitle
+		var tokens: [Token] = []
+		for key in orderedKeys.map({ unKeyed($0) }) {
+			if let target = operation.fields.first(where: { $0.key == key }), let locatedRange = fullMessage.firstRange(of: target.name) {
+				
+				// If this word isn't at the very start of the message, we need to capture everything up to it
+				if locatedRange.lowerBound != fullMessage.startIndex {
+					let str = String(fullMessage[fullMessage.startIndex..<locatedRange.lowerBound])
+					tokens.append(Token(id: str, text: str))
+				}
+				
+				tokens.append(Token(source: target))
+				
+				// Update the message, trimming the parts we've tokenized
+				fullMessage = String(fullMessage[locatedRange.upperBound...])
 			} else {
-				templateMessage = templateMessage.isEmpty ? source.message : templateMessage
-			}
-			
-			if let locatedRange = source.subtitle.firstRange(of: field.name) {
-				templateSubtitle = source.subtitle
-					.replacingOccurrences(of: field.name,
-										  with: keyed(field.key),
-										  options: [],
-										  range: locatedRange)
-			} else {
-				templateSubtitle = templateSubtitle.isEmpty ? source.subtitle : templateSubtitle
+				print("Something went wrong when looking for a key")
 			}
 		}
+		
+		self.tokens = tokens
 	}
 	
 	private func keyed(_ str: String) -> String {
 		return ":\(str)"
 	}
 	
-	var renderedMessage: String {
-		
-	}
-	
-	var renderedSubtitle: String {
-		
+	private func unKeyed(_ str: String) -> String {
+		guard str.hasPrefix(":") else { return str }
+		return String(str.trimmingPrefix(":"))
 	}
 	
 }
@@ -117,8 +125,11 @@ class CreateBiteViewController: UIViewController, FoaasViewController {
 	
 	private var bag: Set<AnyCancellable> = []
 	
+	var template: Template
+	
 	init(operation: FoaasOperation) {
 		self.op = operation
+		self.template = Template(operation: operation)
 		self.builder = FoaasPathBuilder(operation: op)
 		super.init(nibName: nil, bundle: nil)
 		
@@ -192,9 +203,12 @@ class CreateBiteViewController: UIViewController, FoaasViewController {
 			do {
 				let result = (try await foaas, await image)
 				self.foaasSubject.send(result.0)
+				self.template.update(source: result.0)
 				if let image = result.1 {
 					self.imageSubject.send(image)
 				}
+				
+				print(template.tokens)
 				
 			} catch {
 				print("Error occurred: \(error)")
