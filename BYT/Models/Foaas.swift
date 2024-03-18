@@ -19,3 +19,11 @@ struct Foaas: Codable, Mappable {
 	}
 	
 }
+
+extension Foaas {
+	
+	static var empty: Foaas {
+		return Foaas(message: "", subtitle: "")
+	}
+	
+}

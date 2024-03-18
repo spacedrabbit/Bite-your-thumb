@@ -10,6 +10,99 @@
 import UIKit
 import Combine
 
+class Template {
+	
+	struct Token: Identifiable {
+		let id: String
+		let source: FoaasField?
+		var text: String
+		var isEditable: Bool { source != nil }
+		
+		var defaultValue: String {
+			if let source {
+				return source.defaultValue
+			} else {
+				return text
+			}
+		}
+
+		init(source: FoaasField) {
+			self.id = source.key
+			self.source = source
+			self.text = source.defaultValue
+		}
+		
+		init(id: String, text: String) {
+			self.id = id
+			self.source = nil
+			self.text = text
+		}
+	}
+	
+	private let operation: FoaasOperation
+	private var source: Foaas = Foaas.empty
+	
+	private var templateMessage: String = ""
+	private var templateSubtitle: String = ""
+	private var templatedFields: [String : String] = [:]
+	
+	private var tokens: [Token] = []
+
+	init(operation: FoaasOperation) {
+		self.operation = operation
+		for field in self.operation.fields {
+			templatedFields[field.key] = field.defaultValue
+		}
+	}
+	
+	func update(source: Foaas) {
+		self.source = source
+		makeTemplate()
+	}
+	
+	private func makeTemplate() {
+		guard !source.message.isEmpty, !source.subtitle.isEmpty else { return }
+		
+		for field in operation.fields {
+			templatedFields[field.key] = field.name
+			
+			if let locatedRange = source.message.firstRange(of: field.name) {
+				templateMessage = source
+					.message
+					.replacingOccurrences(of: field.name,
+										  with: keyed(field.key),
+										  options: [],
+										  range: locatedRange)
+			} else {
+				templateMessage = templateMessage.isEmpty ? source.message : templateMessage
+			}
+			
+			if let locatedRange = source.subtitle.firstRange(of: field.name) {
+				templateSubtitle = source.subtitle
+					.replacingOccurrences(of: field.name,
+										  with: keyed(field.key),
+										  options: [],
+										  range: locatedRange)
+			} else {
+				templateSubtitle = templateSubtitle.isEmpty ? source.subtitle : templateSubtitle
+			}
+		}
+	}
+	
+	private func keyed(_ str: String) -> String {
+		return ":\(str)"
+	}
+	
+	var renderedMessage: String {
+		
+	}
+	
+	var renderedSubtitle: String {
+		
+	}
+	
+}
+
 class CreateBiteViewController: UIViewController, FoaasViewController {
 	var navigationItems: [NavigationItem] = [.profanity, .done]
 	
@@ -19,7 +112,7 @@ class CreateBiteViewController: UIViewController, FoaasViewController {
 	private let foaasSubject: PassthroughSubject<Foaas, Never> = PassthroughSubject()
 	private let imageSubject: PassthroughSubject<UpsplashImage, Never> = PassthroughSubject()
 
-	private let preview = EditBiteView()
+	private let preview = TappableBitePreviewView()
 	private let blurHashBackground = UIImageView()
 	
 	private var bag: Set<AnyCancellable> = []

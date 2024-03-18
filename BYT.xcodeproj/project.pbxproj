@@ -44,12 +44,13 @@
 		14CFEC481E37088A00BD46CF /* CreateBiteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CFEC471E37088A00BD46CF /* CreateBiteViewController.swift */; };
 		14CFEC4A1E3708C300BD46CF /* FoaasTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CFEC491E3708C300BD46CF /* FoaasTextField.swift */; };
 		14CFEC4C1E3709A700BD46CF /* FoaasNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CFEC4B1E3709A700BD46CF /* FoaasNavigationController.swift */; };
-		14CFEC4E1E37E86700BD46CF /* EditBiteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CFEC4D1E37E86700BD46CF /* EditBiteView.swift */; };
+		14CFEC4E1E37E86700BD46CF /* TappableBitePreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CFEC4D1E37E86700BD46CF /* TappableBitePreviewView.swift */; };
 		14E09D942B783F9200E36A45 /* BlurHashDecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E09D932B783F9200E36A45 /* BlurHashDecode.swift */; };
 		14E09D962B78400D00E36A45 /* UpsplashService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E09D952B78400D00E36A45 /* UpsplashService.swift */; };
 		14E09D9A2B78523500E36A45 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E09D992B78523500E36A45 /* SceneDelegate.swift */; };
 		14E09D9D2B785D2E00E36A45 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 14E09D9C2B785D2E00E36A45 /* Kingfisher */; };
 		14E09D9F2B79951700E36A45 /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E09D9E2B79951700E36A45 /* ImageView.swift */; };
+		14E379382BA7A5D700F7C8CA /* EditBiteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E379372BA7A5D700F7C8CA /* EditBiteView.swift */; };
 		473EA5C41E3E7E6100DD35C9 /* Roboto-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 473EA5B21E3E7E6100DD35C9 /* Roboto-Black.ttf */; };
 		473EA5C51E3E7E6100DD35C9 /* Roboto-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 473EA5B31E3E7E6100DD35C9 /* Roboto-BlackItalic.ttf */; };
 		473EA5C61E3E7E6100DD35C9 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 473EA5B41E3E7E6100DD35C9 /* Roboto-Bold.ttf */; };
@@ -118,12 +119,13 @@
 		14CFEC471E37088A00BD46CF /* CreateBiteViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CreateBiteViewController.swift; path = "View Controllers/CreateBiteViewController.swift"; sourceTree = "<group>"; };
 		14CFEC491E3708C300BD46CF /* FoaasTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoaasTextField.swift; path = Views/FoaasTextField.swift; sourceTree = "<group>"; };
 		14CFEC4B1E3709A700BD46CF /* FoaasNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FoaasNavigationController.swift; path = "View Controllers/FoaasNavigationController.swift"; sourceTree = "<group>"; };
-		14CFEC4D1E37E86700BD46CF /* EditBiteView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EditBiteView.swift; path = Views/EditBiteView.swift; sourceTree = "<group>"; };
+		14CFEC4D1E37E86700BD46CF /* TappableBitePreviewView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TappableBitePreviewView.swift; path = Views/TappableBitePreviewView.swift; sourceTree = "<group>"; };
 		14E09D932B783F9200E36A45 /* BlurHashDecode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BlurHashDecode.swift; path = Utility/BlurHashDecode.swift; sourceTree = "<group>"; };
 		14E09D952B78400D00E36A45 /* UpsplashService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpsplashService.swift; sourceTree = "<group>"; };
 		14E09D982B78435500E36A45 /* LouisSDK */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = LouisSDK; path = ../../Swift/LouisSDK/LouisSDK; sourceTree = "<group>"; };
 		14E09D992B78523500E36A45 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		14E09D9E2B79951700E36A45 /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ImageView.swift; path = Utility/ImageView.swift; sourceTree = "<group>"; };
+		14E379372BA7A5D700F7C8CA /* EditBiteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EditBiteView.swift; path = Views/EditBiteView.swift; sourceTree = "<group>"; };
 		473EA5B21E3E7E6100DD35C9 /* Roboto-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Black.ttf"; sourceTree = "<group>"; };
 		473EA5B31E3E7E6100DD35C9 /* Roboto-BlackItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-BlackItalic.ttf"; sourceTree = "<group>"; };
 		473EA5B41E3E7E6100DD35C9 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
@@ -258,9 +260,10 @@
 				81661B421E4960660044756A /* FoaasTeamMemberView.swift */,
 				14CFEC451E37083400BD46CF /* FoaasOperationTableViewCell.swift */,
 				14CFEC491E3708C300BD46CF /* FoaasTextField.swift */,
-				14CFEC4D1E37E86700BD46CF /* EditBiteView.swift */,
+				14CFEC4D1E37E86700BD46CF /* TappableBitePreviewView.swift */,
 				1498A2FC1E3D7A4F003A3E5C /* FoaasColorPickerView.swift */,
 				1408CAA01E494B1100AFC1AA /* FoaasColorView.swift */,
+				14E379372BA7A5D700F7C8CA /* EditBiteView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -469,6 +472,7 @@
 				14E09D9A2B78523500E36A45 /* SceneDelegate.swift in Sources */,
 				DE6658F71E3E805500513850 /* Extension + UIColor.swift in Sources */,
 				1408CAA11E494B1100AFC1AA /* FoaasColorView.swift in Sources */,
+				14E379382BA7A5D700F7C8CA /* EditBiteView.swift in Sources */,
 				1498A3011E3E55E4003A3E5C /* Version.swift in Sources */,
 				81661B471E49F6C10044756A /* FoaasMember.swift in Sources */,
 				DE6658FB1E3E8E6300513850 /* VersionManager.swift in Sources */,
@@ -499,7 +503,7 @@
 				14E09D962B78400D00E36A45 /* UpsplashService.swift in Sources */,
 				14CFEBFF1E3431F700BD46CF /* AppDelegate.swift in Sources */,
 				14CFEC481E37088A00BD46CF /* CreateBiteViewController.swift in Sources */,
-				14CFEC4E1E37E86700BD46CF /* EditBiteView.swift in Sources */,
+				14CFEC4E1E37E86700BD46CF /* TappableBitePreviewView.swift in Sources */,
 				14CFEC191E34394D00BD46CF /* FoaasService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
